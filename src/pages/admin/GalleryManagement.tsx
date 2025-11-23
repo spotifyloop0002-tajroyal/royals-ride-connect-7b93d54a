@@ -145,6 +145,24 @@ export default function GalleryManagement() {
     },
   });
 
+  const setCoverPhotoMutation = useMutation({
+    mutationFn: async ({ albumId, photoUrl }: { albumId: string; photoUrl: string }) => {
+      const { error } = await supabase
+        .from('gallery_albums')
+        .update({ cover_photo_url: photoUrl })
+        .eq('id', albumId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['gallery-albums'] });
+      toast.success('Cover photo set successfully');
+    },
+    onError: (error) => {
+      toast.error('Failed to set cover photo: ' + error.message);
+    },
+  });
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -270,23 +288,49 @@ export default function GalleryManagement() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {photos.map((photo) => (
-                <div key={photo.id} className="relative group">
-                  <img
-                    src={photo.photo_url}
-                    alt={photo.caption || "Gallery photo"}
-                    className="w-full h-40 object-cover rounded-lg"
-                  />
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => deletePhotoMutation.mutate(photo.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
+              {photos.map((photo) => {
+                const currentAlbum = albums?.find(a => a.id === selectedAlbum);
+                const isCover = currentAlbum?.cover_photo_url === photo.photo_url;
+                
+                return (
+                  <div key={photo.id} className="relative group">
+                    <img
+                      src={photo.photo_url}
+                      alt={photo.caption || "Gallery photo"}
+                      className={`w-full h-40 object-cover rounded-lg ${isCover ? 'ring-4 ring-primary' : ''}`}
+                    />
+                    {isCover && (
+                      <div className="absolute top-2 left-2 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-semibold">
+                        Cover Photo
+                      </div>
+                    )}
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setCoverPhotoMutation.mutate({ 
+                          albumId: selectedAlbum, 
+                          photoUrl: photo.photo_url 
+                        })}
+                        title="Set as cover photo"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                        </svg>
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => deletePhotoMutation.mutate(photo.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
