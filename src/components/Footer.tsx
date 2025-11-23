@@ -65,7 +65,7 @@ const Footer = () => {
                 href="https://www.facebook.com/tajroyals.bikergroup/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                 aria-label="Facebook"
               >
                 <Facebook size={20} />
@@ -74,7 +74,7 @@ const Footer = () => {
                 href="https://www.instagram.com/tajroyals.bikergroup/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                 aria-label="Instagram"
               >
                 <Instagram size={20} />
@@ -83,7 +83,7 @@ const Footer = () => {
                 href="https://www.youtube.com/@tajroyals7501" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                 aria-label="YouTube"
               >
                 <Youtube size={20} />
