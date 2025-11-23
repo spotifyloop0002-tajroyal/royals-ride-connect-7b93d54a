@@ -12,7 +12,8 @@ import {
   Bell, 
   Menu, 
   LogOut,
-  Layers
+  Layers,
+  ClipboardList
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,6 +39,7 @@ export default function SupervisorLayout() {
     { icon: Layers, label: "Hero Slider", path: "/supervisor/hero" },
     { icon: Award, label: "Badges", path: "/supervisor/badges" },
     { icon: Calendar, label: "Rides", path: "/supervisor/rides" },
+    { icon: ClipboardList, label: "Registrations", path: "/supervisor/registrations" },
     { icon: Megaphone, label: "Announcements", path: "/supervisor/announcements" },
     { icon: CreditCard, label: "Payments", path: "/supervisor/payments" },
     { icon: Users, label: "Users", path: "/supervisor/users" },

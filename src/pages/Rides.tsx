@@ -1,12 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Users, Route, TrendingUp, Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Calendar, MapPin, Users, Route, TrendingUp, Loader2, CreditCard, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 
 const Rides = () => {
+  const { user } = useAuth();
+  const [selectedRide, setSelectedRide] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data: rides, isLoading } = useQuery({
     queryKey: ['public-rides'],
     queryFn: async () => {
@@ -19,6 +27,46 @@ const Rides = () => {
       return data;
     },
   });
+
+  const registerForRideMutation = useMutation({
+    mutationFn: async (rideId: string) => {
+      if (!user) {
+        toast.error('Please log in to register for rides');
+        throw new Error('User not authenticated');
+      }
+
+      const { error } = await supabase
+        .from('ride_registrations')
+        .insert({
+          user_id: user.id,
+          ride_id: rideId,
+          payment_status: 'pending'
+        });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success('Registration initiated! Redirecting to payment...');
+    },
+    onError: (error: any) => {
+      if (error.message !== 'User not authenticated') {
+        toast.error('Registration failed: ' + error.message);
+      }
+    },
+  });
+
+  const handleRegisterClick = (ride: any) => {
+    setSelectedRide(ride);
+    setIsDialogOpen(true);
+  };
+
+  const handleConfirmRegistration = async () => {
+    if (selectedRide?.payment_link) {
+      await registerForRideMutation.mutateAsync(selectedRide.id);
+      window.open(selectedRide.payment_link, '_blank');
+      setIsDialogOpen(false);
+    }
+  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -86,17 +134,27 @@ const Rides = () => {
                         </div>
                       </div>
                       {ride.status === "Open" && (
-                        <Button 
-                          size="lg"
-                          onClick={() => {
-                            if (ride.payment_link) {
-                              window.open(ride.payment_link, '_blank');
-                            }
-                          }}
-                          disabled={!ride.payment_link}
-                        >
-                          Register Now
-                        </Button>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button 
+                                size="lg"
+                                onClick={() => handleRegisterClick(ride)}
+                                disabled={!ride.payment_link}
+                              >
+                                <CreditCard className="mr-2 h-4 w-4" />
+                                Register Now
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="font-semibold">
+                                {ride.participation_fee && ride.participation_fee > 0 
+                                  ? `Payment: ₹${ride.participation_fee}` 
+                                  : 'Free Registration'}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       )}
                     </div>
                   </CardHeader>
@@ -177,6 +235,111 @@ const Rides = () => {
           )}
         </div>
       </div>
+
+      {/* Registration Confirmation Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">Confirm Ride Registration</DialogTitle>
+            <DialogDescription>
+              Review the ride details before proceeding to payment
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedRide && (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <h3 className="font-semibold text-lg">{selectedRide.title}</h3>
+                {selectedRide.description && (
+                  <p className="text-sm text-muted-foreground">{selectedRide.description}</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 p-4 bg-muted rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <div className="text-xs text-muted-foreground">Date</div>
+                    <div className="font-medium text-sm">
+                      {new Date(selectedRide.ride_date).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Route className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <div className="text-xs text-muted-foreground">Distance</div>
+                    <div className="font-medium text-sm">{selectedRide.distance} km</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <div className="text-xs text-muted-foreground">Start Point</div>
+                    <div className="font-medium text-sm">{selectedRide.start_point}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <div className="text-xs text-muted-foreground">End Point</div>
+                    <div className="font-medium text-sm">{selectedRide.end_point}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg bg-primary/5">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-primary" />
+                  <span className="font-semibold">Participation Fee</span>
+                </div>
+                <span className="text-2xl font-bold text-primary">
+                  {selectedRide.participation_fee && selectedRide.participation_fee > 0 
+                    ? `₹${selectedRide.participation_fee}` 
+                    : 'FREE'}
+                </span>
+              </div>
+
+              {!user && (
+                <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                  <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                    Please log in to track your registration and receive updates.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleConfirmRegistration}
+              disabled={registerForRideMutation.isPending}
+            >
+              {registerForRideMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Proceed to Payment
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };

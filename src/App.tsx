@@ -25,6 +25,7 @@ import GalleryManagement from './pages/admin/GalleryManagement';
 import HeroEditor from './pages/admin/HeroEditor';
 import BadgeManagement from './pages/admin/BadgeManagement';
 import RideManagement from './pages/admin/RideManagement';
+import RideRegistrations from './pages/admin/RideRegistrations';
 import AnnouncementManagement from './pages/admin/AnnouncementManagement';
 import SupervisorLogin from './pages/supervisor/SupervisorLogin';
 import SupervisorLayout from './pages/supervisor/SupervisorLayout';
@@ -91,6 +92,7 @@ const App = () => (
               <Route path="hero" element={<HeroEditor />} />
               <Route path="badges" element={<BadgeManagement />} />
               <Route path="rides" element={<RideManagement />} />
+              <Route path="registrations" element={<RideRegistrations />} />
               <Route path="announcements" element={<AnnouncementManagement />} />
             </Route>
             
@@ -102,6 +104,7 @@ const App = () => (
               <Route path="hero" element={<HeroEditor />} />
               <Route path="badges" element={<BadgeManagement />} />
               <Route path="rides" element={<RideManagement />} />
+              <Route path="registrations" element={<RideRegistrations />} />
               <Route path="announcements" element={<AnnouncementManagement />} />
               <Route path="payments" element={<PaymentOverview />} />
               <Route path="users" element={<UserManagement />} />

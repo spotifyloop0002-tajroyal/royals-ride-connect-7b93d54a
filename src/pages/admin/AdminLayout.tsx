@@ -9,7 +9,8 @@ import {
   Bell, 
   ImageIcon,
   LogOut,
-  Menu
+  Menu,
+  ClipboardList
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -29,6 +30,7 @@ export default function AdminLayout() {
     { path: "/admin/hero", label: "Hero Images", icon: ImageIcon },
     { path: "/admin/badges", label: "Badges", icon: Award },
     { path: "/admin/rides", label: "Rides", icon: Calendar },
+    { path: "/admin/registrations", label: "Registrations", icon: ClipboardList },
     { path: "/admin/announcements", label: "Announcements", icon: Bell },
   ];
 
