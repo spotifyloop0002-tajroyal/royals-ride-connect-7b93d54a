@@ -1,32 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Auth = () => {
+  const navigate = useNavigate();
+  const { signIn, signUp, user, isAdmin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [signupData, setSignupData] = useState({
+    email: "",
+    mobile: "",
+    password: "",
+    full_name: "",
+    username: "",
+  });
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (user) {
+      if (isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  }, [user, isAdmin, navigate]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Placeholder for authentication
-    setTimeout(() => {
-      setIsLoading(false);
-      window.location.href = "/dashboard";
-    }, 1000);
+    const { error } = await signIn(loginData.email, loginData.password);
+    setIsLoading(false);
+    if (!error) {
+      // Navigation handled by useEffect
+    }
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Placeholder for authentication
-    setTimeout(() => {
-      setIsLoading(false);
-      window.location.href = "/dashboard";
-    }, 1000);
+    const { error } = await signUp(signupData.email, signupData.password, {
+      full_name: signupData.full_name,
+      username: signupData.username,
+      mobile: signupData.mobile,
+    });
+    setIsLoading(false);
+    if (!error) {
+      // Navigation handled by useEffect
+    }
   };
 
   return (
@@ -51,11 +77,13 @@ const Auth = () => {
                 <TabsContent value="login">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div>
-                      <Label htmlFor="login-email">Email or Username</Label>
+                      <Label htmlFor="login-email">Email</Label>
                       <Input
                         id="login-email"
-                        type="text"
-                        placeholder="Enter your email or username"
+                        type="email"
+                        placeholder="your@email.com"
+                        value={loginData.email}
+                        onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                         required
                       />
                     </div>
@@ -65,28 +93,49 @@ const Auth = () => {
                         id="login-password"
                         type="password"
                         placeholder="Enter your password"
+                        value={loginData.password}
+                        onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                         required
                       />
                     </div>
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? "Logging in..." : "Login"}
                     </Button>
-                    <div className="text-center text-sm text-muted-foreground">
-                      <a href="#" className="hover:text-primary">
-                        Forgot password?
-                      </a>
-                    </div>
                   </form>
                 </TabsContent>
 
                 <TabsContent value="signup">
                   <form onSubmit={handleSignup} className="space-y-4">
                     <div>
+                      <Label htmlFor="signup-name">Full Name</Label>
+                      <Input
+                        id="signup-name"
+                        type="text"
+                        placeholder="Your full name"
+                        value={signupData.full_name}
+                        onChange={(e) => setSignupData({ ...signupData, full_name: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="signup-username">Username</Label>
+                      <Input
+                        id="signup-username"
+                        type="text"
+                        placeholder="Choose a username"
+                        value={signupData.username}
+                        onChange={(e) => setSignupData({ ...signupData, username: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div>
                       <Label htmlFor="signup-email">Email</Label>
                       <Input
                         id="signup-email"
                         type="email"
                         placeholder="your@email.com"
+                        value={signupData.email}
+                        onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
                         required
                       />
                     </div>
@@ -96,6 +145,8 @@ const Auth = () => {
                         id="signup-mobile"
                         type="tel"
                         placeholder="+91 XXXXX XXXXX"
+                        value={signupData.mobile}
+                        onChange={(e) => setSignupData({ ...signupData, mobile: e.target.value })}
                         required
                       />
                     </div>
@@ -104,24 +155,18 @@ const Auth = () => {
                       <Input
                         id="signup-password"
                         type="password"
-                        placeholder="Create a password"
+                        placeholder="Create a password (min 6 characters)"
+                        value={signupData.password}
+                        onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
                         required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="signup-confirm">Confirm Password</Label>
-                      <Input
-                        id="signup-confirm"
-                        type="password"
-                        placeholder="Confirm your password"
-                        required
+                        minLength={6}
                       />
                     </div>
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? "Creating account..." : "Sign Up"}
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
-                      By signing up, you agree to complete the full membership form
+                      By signing up, you agree to complete your profile in the dashboard
                     </p>
                   </form>
                 </TabsContent>

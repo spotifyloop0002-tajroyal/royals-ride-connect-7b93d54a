@@ -12,14 +12,24 @@ import {
   LogOut,
   User,
   Camera,
+  Shield,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Dashboard = () => {
-  // Mock user data
-  const user = {
-    name: "Rahul Sharma",
-    username: "@rahul_rider",
+  const { user, signOut, isAdmin } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
+  // Mock user data - in production, fetch from profiles table
+  const userData = {
+    name: user?.user_metadata?.full_name || "Rider",
+    username: user?.user_metadata?.username || "rider",
     memberSince: "2020",
     photo: "👤",
     ridesCompleted: 42,
@@ -65,7 +75,7 @@ const Dashboard = () => {
     distance: "240 km",
   };
 
-  const yearsInClub = new Date().getFullYear() - parseInt(user.memberSince);
+  const yearsInClub = new Date().getFullYear() - parseInt(userData.memberSince);
 
   return (
     <Layout>
@@ -115,21 +125,21 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-6xl mb-4">{user.photo}</div>
-                  <h2 className="text-2xl font-bold mb-1">{user.name}</h2>
-                  <p className="text-muted-foreground mb-4">{user.username}</p>
+                  <div className="text-6xl mb-4">{userData.photo}</div>
+                  <h2 className="text-2xl font-bold mb-1">{userData.name}</h2>
+                  <p className="text-muted-foreground mb-4">@{userData.username}</p>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Bike:</span>
-                      <span className="font-medium">{user.bike}</span>
+                      <span className="font-medium">{userData.bike}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Blood Group:</span>
-                      <span className="font-medium">{user.bloodGroup}</span>
+                      <span className="font-medium">{userData.bloodGroup}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Member Since:</span>
-                      <span className="font-medium">{user.memberSince}</span>
+                      <span className="font-medium">{userData.memberSince}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Years in Club:</span>
@@ -144,6 +154,14 @@ const Dashboard = () => {
                   <CardTitle>Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
+                  {isAdmin && (
+                    <Button variant="outline" className="w-full justify-start" asChild>
+                      <Link to="/admin">
+                        <Shield className="w-4 h-4 mr-2" />
+                        Admin Panel
+                      </Link>
+                    </Button>
+                  )}
                   <Button variant="outline" className="w-full justify-start" asChild>
                     <Link to="/rides">
                       <Calendar className="w-4 h-4 mr-2" />
@@ -156,7 +174,11 @@ const Dashboard = () => {
                       Browse Gallery
                     </Link>
                   </Button>
-                  <Button variant="outline" className="w-full justify-start text-destructive">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-destructive"
+                    onClick={handleSignOut}
+                  >
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </Button>
@@ -171,7 +193,7 @@ const Dashboard = () => {
                 <Card className="animate-fade-in">
                   <CardContent className="p-6 text-center">
                     <MapPin className="w-8 h-8 mx-auto mb-2 text-primary" />
-                    <div className="text-2xl font-bold">{user.ridesCompleted}</div>
+                    <div className="text-2xl font-bold">{userData.ridesCompleted}</div>
                     <div className="text-sm text-muted-foreground">Rides</div>
                   </CardContent>
                 </Card>
@@ -179,7 +201,7 @@ const Dashboard = () => {
                 <Card className="animate-fade-in">
                   <CardContent className="p-6 text-center">
                     <TrendingUp className="w-8 h-8 mx-auto mb-2 text-primary" />
-                    <div className="text-2xl font-bold">{user.totalKM.toLocaleString()}</div>
+                    <div className="text-2xl font-bold">{userData.totalKM.toLocaleString()}</div>
                     <div className="text-sm text-muted-foreground">Total KM</div>
                   </CardContent>
                 </Card>
@@ -187,7 +209,7 @@ const Dashboard = () => {
                 <Card className="animate-fade-in">
                   <CardContent className="p-6 text-center">
                     <Award className="w-8 h-8 mx-auto mb-2 text-primary" />
-                    <div className="text-2xl font-bold">{user.badgesEarned}</div>
+                    <div className="text-2xl font-bold">{userData.badgesEarned}</div>
                     <div className="text-sm text-muted-foreground">Badges</div>
                   </CardContent>
                 </Card>
