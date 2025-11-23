@@ -6,9 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Camera, Loader2, X, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import PhotoLightbox from "@/components/PhotoLightbox";
 
 const Gallery = () => {
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
   const { data: albums, isLoading: albumsLoading } = useQuery({
     queryKey: ['public-albums'],
@@ -142,12 +144,16 @@ const Gallery = () => {
             </div>
           ) : photos && photos.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-              {photos.map((photo) => (
-                <div key={photo.id} className="relative group">
+              {photos.map((photo, index) => (
+                <div 
+                  key={photo.id} 
+                  className="relative group cursor-pointer"
+                  onClick={() => setSelectedPhotoIndex(index)}
+                >
                   <img
                     src={photo.photo_url}
                     alt={photo.caption || "Gallery photo"}
-                    className="w-full h-48 object-cover rounded-lg"
+                    className="w-full h-48 object-cover rounded-lg transition-transform hover:scale-105"
                   />
                   {photo.caption && (
                     <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2 rounded-b-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity">
@@ -165,6 +171,16 @@ const Gallery = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Photo Lightbox */}
+      {selectedPhotoIndex !== null && photos && (
+        <PhotoLightbox
+          photos={photos}
+          initialIndex={selectedPhotoIndex}
+          onClose={() => setSelectedPhotoIndex(null)}
+          albumTitle={selectedAlbumData?.title}
+        />
+      )}
     </Layout>
   );
 };
