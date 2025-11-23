@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -47,7 +47,7 @@ export default function ProfileEditor() {
   });
 
   // Update form when profile loads
-  useState(() => {
+  useEffect(() => {
     if (profile) {
       setFormData({
         username: profile.username || "",
@@ -59,7 +59,7 @@ export default function ProfileEditor() {
         email: profile.email || "",
       });
     }
-  });
+  }, [profile]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
