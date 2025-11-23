@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
+import EnergyButton from "./EnergyButton";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
+import gsap from "gsap";
 
 // Fallback slides if no images in database
 const fallbackSlides = [
@@ -16,6 +18,9 @@ const fallbackSlides = [
 
 const HeroSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const buttonsRef = useRef<HTMLDivElement>(null);
 
   const { data: heroImages, isLoading } = useQuery({
     queryKey: ['hero-images'],
@@ -45,6 +50,27 @@ const HeroSlider = () => {
       }));
 
   useEffect(() => {
+    // Animate hero text on mount
+    if (titleRef.current && subtitleRef.current && buttonsRef.current) {
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 50, scale: 0.9 },
+        { opacity: 1, y: 0, scale: 1, duration: 1, ease: "power3.out" }
+      );
+      gsap.fromTo(
+        subtitleRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, delay: 0.3, ease: "power2.out" }
+      );
+      gsap.fromTo(
+        buttonsRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, delay: 0.6, ease: "power2.out" }
+      );
+    }
+  }, []);
+
+  useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
@@ -64,11 +90,14 @@ const HeroSlider = () => {
 
   return (
     <div className="relative h-[600px] overflow-hidden rounded-lg">
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 animate-pulse z-10 pointer-events-none" />
+      
       {slides.map((slide, index) => (
         <div
           key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === currentSlide ? "opacity-100" : "opacity-0"
+          className={`absolute inset-0 transition-all duration-1000 ${
+            index === currentSlide ? "opacity-100 scale-100" : "opacity-0 scale-105"
           }`}
         >
           <img
@@ -77,25 +106,36 @@ const HeroSlider = () => {
             className="w-full h-full object-cover"
             loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         </div>
       ))}
 
-      <div className="absolute inset-0 flex items-center justify-center text-center px-4">
-        <div className="max-w-4xl animate-fade-in">
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 text-primary-foreground drop-shadow-lg">
-            Ride Together. Live Free.
+      <div className="absolute inset-0 flex items-center justify-center text-center px-4 z-20">
+        <div className="max-w-4xl">
+          <h1 
+            ref={titleRef}
+            className="text-5xl md:text-7xl font-black mb-4 text-gradient drop-shadow-2xl"
+            style={{ 
+              textShadow: '0 0 30px rgba(255,0,0,0.5), 0 0 60px rgba(255,0,0,0.3)',
+              letterSpacing: '0.05em'
+            }}
+          >
+            RIDE TOGETHER. LIVE FREE.
           </h1>
-          <p className="text-xl md:text-2xl text-accent mb-8 drop-shadow-lg">
+          <p 
+            ref={subtitleRef}
+            className="text-xl md:text-3xl text-electric font-bold mb-8 drop-shadow-lg"
+            style={{ textShadow: '0 0 20px rgba(0,255,255,0.5)' }}
+          >
             Since 2005 – Agra's First Riders Club
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="text-lg" asChild>
-              <a href="/membership">Join Membership</a>
-            </Button>
-            <Button size="lg" variant="secondary" className="text-lg" asChild>
-              <a href="/rides">Upcoming Rides</a>
-            </Button>
+          <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-6 justify-center">
+            <a href="/membership">
+              <EnergyButton variant="primary">JOIN THE REVOLUTION</EnergyButton>
+            </a>
+            <a href="/rides">
+              <EnergyButton variant="accent">UPCOMING RIDES</EnergyButton>
+            </a>
           </div>
         </div>
       </div>
@@ -105,7 +145,7 @@ const HeroSlider = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/20 hover:bg-background/40 text-primary-foreground"
+            className="absolute left-4 top-1/2 -translate-y-1/2 glass-effect hover:bg-primary/20 text-foreground z-30 transition-all hover:scale-110"
             onClick={prevSlide}
           >
             <ChevronLeft size={32} />
@@ -114,19 +154,21 @@ const HeroSlider = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/20 hover:bg-background/40 text-primary-foreground"
+            className="absolute right-4 top-1/2 -translate-y-1/2 glass-effect hover:bg-primary/20 text-foreground z-30 transition-all hover:scale-110"
             onClick={nextSlide}
           >
             <ChevronRight size={32} />
           </Button>
 
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-30">
             {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  index === currentSlide ? "bg-accent w-8" : "bg-background/50"
+                className={`h-2 rounded-full transition-all ${
+                  index === currentSlide 
+                    ? "bg-primary w-12 shadow-[0_0_15px_hsl(var(--primary))]" 
+                    : "bg-foreground/30 w-2 hover:bg-foreground/50"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />

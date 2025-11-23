@@ -8,72 +8,96 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 84 42% 9%;
+    --background: 0 0% 98%;
+    --foreground: 220 100% 8%;
     
     --card: 0 0% 100%;
-    --card-foreground: 84 42% 9%;
+    --card-foreground: 220 100% 8%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 84 42% 9%;
+    --popover-foreground: 220 100% 8%;
     
-    --primary: 96 61% 23%;
-    --primary-foreground: 60 100% 82%;
+    --primary: 4 90% 58%;
+    --primary-foreground: 0 0% 100%;
     
-    --secondary: 51 57% 58%;
-    --secondary-foreground: 84 42% 9%;
+    --secondary: 217 91% 60%;
+    --secondary-foreground: 0 0% 100%;
     
-    --muted: 60 5% 90%;
-    --muted-foreground: 84 10% 45%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 220 8% 46%;
     
-    --accent: 60 100% 82%;
-    --accent-foreground: 84 42% 9%;
+    --accent: 340 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    
+    --electric: 187 100% 50%;
+    --electric-foreground: 220 100% 8%;
+    
+    --neon: 290 100% 60%;
+    --neon-foreground: 0 0% 100%;
+    
+    --chrome: 0 0% 85%;
+    --chrome-foreground: 220 100% 8%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     
-    --border: 60 10% 85%;
-    --input: 60 10% 85%;
-    --ring: 96 61% 23%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 4 90% 58%;
     
-    --radius: 0.75rem;
+    --radius: 0.5rem;
     
-    --hero-gradient: linear-gradient(135deg, hsl(96 61% 23%), hsl(84 42% 15%));
-    --gold-gradient: linear-gradient(135deg, hsl(51 57% 58%), hsl(45 86% 62%));
-    --glow-primary: 0 0 40px hsl(60 100% 82% / 0.3);
-    --shadow-strong: 0 20px 50px -10px hsl(84 42% 9% / 0.4);
+    --hero-gradient: linear-gradient(135deg, hsl(4 90% 58%), hsl(340 100% 50%), hsl(217 91% 60%));
+    --energy-gradient: linear-gradient(90deg, hsl(4 90% 58%), hsl(340 100% 50%), hsl(187 100% 50%));
+    --metallic-gradient: linear-gradient(145deg, hsl(0 0% 95%), hsl(0 0% 85%), hsl(0 0% 75%));
+    --glass-gradient: linear-gradient(135deg, hsla(0 0% 100% / 0.15), hsla(0 0% 100% / 0.05));
+    --glow-primary: 0 0 60px hsl(4 90% 58% / 0.6);
+    --glow-electric: 0 0 40px hsl(187 100% 50% / 0.5);
+    --glow-neon: 0 0 50px hsl(290 100% 60% / 0.4);
+    --shadow-premium: 0 25px 50px -12px hsl(220 100% 8% / 0.25);
+    --shadow-intense: 0 30px 60px -15px hsl(4 90% 58% / 0.4);
     
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
   .dark {
-    --background: 84 42% 9%;
-    --foreground: 60 100% 95%;
+    --background: 220 100% 8%;
+    --foreground: 0 0% 98%;
     
-    --card: 84 35% 12%;
-    --card-foreground: 60 100% 95%;
+    --card: 220 90% 12%;
+    --card-foreground: 0 0% 98%;
     
-    --popover: 84 35% 12%;
-    --popover-foreground: 60 100% 95%;
+    --popover: 220 90% 12%;
+    --popover-foreground: 0 0% 98%;
     
-    --primary: 60 100% 82%;
-    --primary-foreground: 84 42% 9%;
+    --primary: 4 90% 58%;
+    --primary-foreground: 0 0% 100%;
     
-    --secondary: 51 57% 58%;
-    --secondary-foreground: 84 42% 9%;
+    --secondary: 217 91% 60%;
+    --secondary-foreground: 0 0% 100%;
     
-    --muted: 84 20% 20%;
-    --muted-foreground: 60 10% 65%;
+    --muted: 220 30% 18%;
+    --muted-foreground: 220 10% 65%;
     
-    --accent: 45 86% 62%;
-    --accent-foreground: 84 42% 9%;
+    --accent: 340 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    
+    --electric: 187 100% 50%;
+    --electric-foreground: 220 100% 8%;
+    
+    --neon: 290 100% 60%;
+    --neon-foreground: 0 0% 100%;
+    
+    --chrome: 0 0% 35%;
+    --chrome-foreground: 0 0% 98%;
     
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
     
-    --border: 84 20% 20%;
-    --input: 84 20% 20%;
-    --ring: 60 100% 82%;
+    --border: 220 30% 18%;
+    --input: 220 30% 18%;
+    --ring: 4 90% 58%;
   }
 }
 
@@ -83,6 +107,64 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .glass-effect {
+    @apply backdrop-blur-xl bg-white/10 border border-white/20;
+  }
+  
+  .metallic-shine {
+    background: var(--metallic-gradient);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .metallic-shine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, hsla(0 0% 100% / 0.3), transparent);
+    transform: rotate(45deg);
+    animation: shine 3s infinite;
+  }
+  
+  @keyframes shine {
+    0%, 100% { transform: translateX(-100%) rotate(45deg); }
+    50% { transform: translateX(100%) rotate(45deg); }
+  }
+  
+  .energy-pulse {
+    animation: pulse-energy 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse-energy {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+    }
+    50% {
+      opacity: 0.8;
+      box-shadow: 0 0 40px hsl(var(--primary) / 0.8);
+    }
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--hero-gradient);
+  }
+  
+  .hover-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+  }
+  
+  .hover-3d:hover {
+    transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.05);
   }
 }
