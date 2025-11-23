@@ -174,12 +174,21 @@ export default function GalleryManagement() {
               </div>
               <div>
                 <Label htmlFor="category">Category</Label>
-                <Input
-                  id="category"
+                <Select
                   value={newAlbum.category}
-                  onChange={(e) => setNewAlbum({ ...newAlbum, category: e.target.value })}
-                  placeholder="e.g., Rides, Events, Members"
-                />
+                  onValueChange={(value) => setNewAlbum({ ...newAlbum, category: value })}
+                >
+                  <SelectTrigger id="category">
+                    <SelectValue placeholder="Choose a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ride">Ride</SelectItem>
+                    <SelectItem value="Casual Meet">Casual Meet</SelectItem>
+                    <SelectItem value="Short Ride">Short Ride</SelectItem>
+                    <SelectItem value="Event">Event</SelectItem>
+                    <SelectItem value="News">News</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="description">Description</Label>
