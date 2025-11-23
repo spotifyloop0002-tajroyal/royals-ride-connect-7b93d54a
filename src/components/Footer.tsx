@@ -41,6 +41,11 @@ const Footer = () => {
                   Ride Calendar
                 </Link>
               </li>
+              <li>
+                <Link to="/supervisor/login" className="text-muted-foreground hover:text-primary transition-colors">
+                  Supervisor Panel
+                </Link>
+              </li>
             </ul>
           </div>
 
