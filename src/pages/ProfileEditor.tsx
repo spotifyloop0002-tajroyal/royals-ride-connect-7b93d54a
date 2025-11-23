@@ -83,19 +83,66 @@ export default function ProfileEditor() {
     },
   });
 
+  const resizeImage = (file: File, maxSize: number = 1000): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = maxSize;
+          canvas.height = maxSize;
+          const ctx = canvas.getContext('2d');
+          
+          if (!ctx) {
+            reject(new Error('Could not get canvas context'));
+            return;
+          }
+
+          // Calculate dimensions to crop to square
+          const size = Math.min(img.width, img.height);
+          const x = (img.width - size) / 2;
+          const y = (img.height - size) / 2;
+          
+          // Draw image cropped and resized to 1000x1000
+          ctx.drawImage(img, x, y, size, size, 0, 0, maxSize, maxSize);
+          
+          canvas.toBlob((blob) => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error('Could not create blob'));
+            }
+          }, 'image/jpeg', 0.9);
+        };
+        img.onerror = reject;
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, fileType: 'profile' | 'license' | 'plate') => {
     const file = event.target.files?.[0];
     if (!file || !user?.id) return;
 
     setUploading(true);
     try {
+      let uploadFile: File | Blob = file;
+      
+      // Resize profile photos to 1000x1000
+      if (fileType === 'profile' && file.type.startsWith('image/')) {
+        uploadFile = await resizeImage(file, 1000);
+      }
+
       const bucket = fileType === 'profile' ? 'profile-photos' : 'documents';
-      const fileExt = file.name.split('.').pop();
+      const fileExt = fileType === 'profile' ? 'jpg' : file.name.split('.').pop();
       const fileName = `${user.id}/${fileType}-${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from(bucket)
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, uploadFile, { upsert: true });
 
       if (uploadError) throw uploadError;
 

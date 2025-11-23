@@ -170,7 +170,17 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-6xl mb-4">{userData.photo}</div>
+                  <div className="flex justify-center mb-4">
+                    {userData.photo.startsWith('http') ? (
+                      <img 
+                        src={userData.photo} 
+                        alt={userData.name}
+                        className="w-32 h-32 rounded-full object-cover border-4 border-primary"
+                      />
+                    ) : (
+                      <div className="text-6xl">{userData.photo}</div>
+                    )}
+                  </div>
                   <h2 className="text-2xl font-bold mb-1">{userData.name}</h2>
                   <p className="text-muted-foreground mb-2">@{userData.username}</p>
                   <div className="flex items-center justify-center gap-2 mb-4">
