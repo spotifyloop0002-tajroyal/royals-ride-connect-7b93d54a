@@ -117,11 +117,11 @@ const RoadTimeline = () => {
   return (
     <section className="relative min-h-screen bg-black py-24 overflow-hidden">
       {/* Section Title */}
-      <div className="container mx-auto px-4 mb-16">
-        <h2 className="text-5xl md:text-7xl font-black text-center mb-4" style={{ fontFamily: 'Impact, Arial Black, sans-serif' }}>
+      <div className="container mx-auto px-4 mb-16 max-w-7xl">
+        <h2 className="text-5xl md:text-7xl font-black text-left mb-4" style={{ fontFamily: 'Impact, Arial Black, sans-serif' }}>
           <span className="text-gradient">OUR JOURNEY</span>
         </h2>
-        <p className="text-center text-muted-foreground text-lg">Two decades of adventure on two wheels</p>
+        <p className="text-left text-muted-foreground text-lg">Two decades of adventure on two wheels</p>
       </div>
 
       {/* Road Background - Fixed in center */}
