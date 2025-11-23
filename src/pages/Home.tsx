@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import HeroSlider from "@/components/HeroSlider";
 import StatsCard from "@/components/StatsCard";
 import ParticleBackground from "@/components/ParticleBackground";
+import RoadTimeline from "@/components/RoadTimeline";
 import { MapPin, Users, Route, TrendingUp, Calendar, Award } from "lucide-react";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
@@ -96,6 +97,8 @@ const Home = () => {
           </div>
         </section>
       </div>
+
+      <RoadTimeline />
     </Layout>
   );
 };
