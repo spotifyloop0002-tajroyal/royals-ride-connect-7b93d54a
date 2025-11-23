@@ -86,7 +86,17 @@ const Rides = () => {
                         </div>
                       </div>
                       {ride.status === "Open" && (
-                        <Button size="lg">Register Now</Button>
+                        <Button 
+                          size="lg"
+                          onClick={() => {
+                            if (ride.payment_link) {
+                              window.open(ride.payment_link, '_blank');
+                            }
+                          }}
+                          disabled={!ride.payment_link}
+                        >
+                          Register Now
+                        </Button>
                       )}
                     </div>
                   </CardHeader>

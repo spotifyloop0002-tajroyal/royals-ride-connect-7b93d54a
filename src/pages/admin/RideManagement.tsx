@@ -25,6 +25,7 @@ export default function RideManagement() {
     participation_fee: 0,
     registration_limit: 50,
     route_map_link: "",
+    payment_link: "",
   });
 
   const { data: rides } = useQuery({
@@ -63,6 +64,7 @@ export default function RideManagement() {
         participation_fee: 0,
         registration_limit: 50,
         route_map_link: "",
+        payment_link: "",
       });
       toast.success('Ride created successfully');
     },
@@ -221,6 +223,15 @@ export default function RideManagement() {
                   value={newRide.route_map_link || ""}
                   onChange={(e) => setNewRide({ ...newRide, route_map_link: e.target.value })}
                   placeholder="Google Maps or other route link"
+                />
+              </div>
+              <div>
+                <Label htmlFor="payment_link">Payment Link (Optional)</Label>
+                <Input
+                  id="payment_link"
+                  value={newRide.payment_link || ""}
+                  onChange={(e) => setNewRide({ ...newRide, payment_link: e.target.value })}
+                  placeholder="Payment gateway link for registration"
                 />
               </div>
               <Button 

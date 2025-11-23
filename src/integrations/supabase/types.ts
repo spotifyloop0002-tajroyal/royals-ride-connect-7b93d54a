@@ -378,6 +378,7 @@ export type Database = {
           end_point: string
           id: string
           participation_fee: number | null
+          payment_link: string | null
           registration_limit: number | null
           ride_date: string
           ride_type: string
@@ -397,6 +398,7 @@ export type Database = {
           end_point: string
           id?: string
           participation_fee?: number | null
+          payment_link?: string | null
           registration_limit?: number | null
           ride_date: string
           ride_type: string
@@ -416,6 +418,7 @@ export type Database = {
           end_point?: string
           id?: string
           participation_fee?: number | null
+          payment_link?: string | null
           registration_limit?: number | null
           ride_date?: string
           ride_type?: string
