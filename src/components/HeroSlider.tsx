@@ -32,7 +32,17 @@ const HeroSlider = () => {
   });
 
   // Use database images or fallback to static images
-  const slides = (heroImages && heroImages.length > 0) ? heroImages : fallbackSlides;
+  const slides = (heroImages && heroImages.length > 0) 
+    ? heroImages.map(img => ({
+        id: img.id,
+        image_url: img.image_url,
+        alt_text: img.alt_text || "Hero slide",
+        isDatabase: true
+      }))
+    : fallbackSlides.map(img => ({
+        ...img,
+        isDatabase: false
+      }));
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -62,9 +72,10 @@ const HeroSlider = () => {
           }`}
         >
           <img
-            src={slide.image_url}
-            alt={slide.alt_text || "Hero slide"}
+            src={'isDatabase' in slide && slide.isDatabase ? slide.image_url : (slide.image_url as string)}
+            alt={slide.alt_text}
             className="w-full h-full object-cover"
+            loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
         </div>
