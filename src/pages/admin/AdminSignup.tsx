@@ -73,13 +73,12 @@ export default function AdminSignup() {
         // Wait a moment for the profile to be created by the trigger
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Assign super_admin role
+        // Update the auto-assigned 'user' role to 'super_admin'
         const { error: roleError } = await supabase
           .from('user_roles')
-          .insert({
-            user_id: authData.user.id,
-            role: 'super_admin'
-          });
+          .update({ role: 'super_admin' })
+          .eq('user_id', authData.user.id)
+          .eq('role', 'user');
 
         if (roleError) {
           console.error('Role assignment error:', roleError);
