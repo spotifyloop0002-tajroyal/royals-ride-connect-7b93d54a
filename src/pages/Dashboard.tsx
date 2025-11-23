@@ -210,6 +210,12 @@ const Dashboard = () => {
                     </Link>
                   </Button>
                   <Button variant="outline" className="w-full justify-start" asChild>
+                    <Link to="/ride-history">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      Ride History
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start" asChild>
                     <Link to="/rides">
                       <Calendar className="w-4 h-4 mr-2" />
                       View Ride Calendar

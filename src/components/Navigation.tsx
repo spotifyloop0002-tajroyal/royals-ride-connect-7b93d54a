@@ -3,10 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import NotificationBell from "./NotificationBell";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -14,6 +17,7 @@ const Navigation = () => {
     { name: "Gallery", path: "/gallery" },
     { name: "Membership", path: "/membership" },
     { name: "Ride Calendar", path: "/rides" },
+    { name: "Leaderboard", path: "/leaderboard" },
     { name: "Contact", path: "/contact" },
   ];
 
@@ -45,11 +49,22 @@ const Navigation = () => {
                 {link.name}
               </Link>
             ))}
-            <Link to="/auth">
-              <Button variant="default" className="ml-4">
-                Login / Join
-              </Button>
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-2 ml-4">
+                <NotificationBell />
+                <Link to="/dashboard">
+                  <Button variant="default">
+                    Dashboard
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <Link to="/auth">
+                <Button variant="default" className="ml-4">
+                  Login / Join
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}

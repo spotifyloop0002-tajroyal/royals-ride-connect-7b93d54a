@@ -14,6 +14,8 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import ProfileEditor from "./pages/ProfileEditor";
+import RideHistory from "./pages/RideHistory";
+import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -65,6 +67,15 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/ride-history"
+              element={
+                <ProtectedRoute>
+                  <RideHistory />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/signup" element={<AdminSignup />} />
             <Route
