@@ -234,6 +234,7 @@ export type Database = {
       profiles: {
         Row: {
           bike_model: string | null
+          bike_number_plate: string | null
           blood_group: string | null
           city: string | null
           country: string | null
@@ -255,6 +256,7 @@ export type Database = {
         }
         Insert: {
           bike_model?: string | null
+          bike_number_plate?: string | null
           blood_group?: string | null
           city?: string | null
           country?: string | null
@@ -276,6 +278,7 @@ export type Database = {
         }
         Update: {
           bike_model?: string | null
+          bike_number_plate?: string | null
           blood_group?: string | null
           city?: string | null
           country?: string | null

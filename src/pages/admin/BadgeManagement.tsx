@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Plus, Award } from "lucide-react";
+import { Plus, Award, Trash2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 export default function BadgeManagement() {
   const queryClient = useQueryClient();
@@ -91,6 +92,33 @@ export default function BadgeManagement() {
     },
     onError: (error) => {
       toast.error('Failed to award badge: ' + error.message);
+    },
+  });
+
+  const deleteBadgeMutation = useMutation({
+    mutationFn: async (badgeId: string) => {
+      // First delete all user_badges references
+      const { error: userBadgesError } = await supabase
+        .from('user_badges')
+        .delete()
+        .eq('badge_id', badgeId);
+      
+      if (userBadgesError) throw userBadgesError;
+
+      // Then delete the badge itself
+      const { error } = await supabase
+        .from('badges')
+        .delete()
+        .eq('id', badgeId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['badges-admin'] });
+      toast.success('Badge deleted successfully');
+    },
+    onError: (error) => {
+      toast.error('Failed to delete badge: ' + error.message);
     },
   });
 
@@ -241,6 +269,30 @@ export default function BadgeManagement() {
                       </p>
                     )}
                   </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Badge</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete "{badge.name}"? This will also remove this badge from all users who have earned it. This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={() => deleteBadgeMutation.mutate(badge.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
             ))}

@@ -204,6 +204,12 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <Button variant="outline" className="w-full justify-start" asChild>
+                    <Link to="/profile/edit">
+                      <User className="w-4 h-4 mr-2" />
+                      Edit Profile
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start" asChild>
                     <Link to="/rides">
                       <Calendar className="w-4 h-4 mr-2" />
                       View Ride Calendar
