@@ -119,7 +119,7 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+      className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
       onClick={onClose}
     >
       {/* Top Controls Bar */}
