@@ -14,15 +14,22 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
-import AdminLayout from "./pages/admin/AdminLayout";
-import AdminLogin from "./pages/admin/AdminLogin";
-import AdminSignup from "./pages/admin/AdminSignup";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import GalleryManagement from "./pages/admin/GalleryManagement";
-import HeroEditor from "./pages/admin/HeroEditor";
-import BadgeManagement from "./pages/admin/BadgeManagement";
-import RideManagement from "./pages/admin/RideManagement";
-import AnnouncementManagement from "./pages/admin/AnnouncementManagement";
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminSignup from './pages/admin/AdminSignup';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import GalleryManagement from './pages/admin/GalleryManagement';
+import HeroEditor from './pages/admin/HeroEditor';
+import BadgeManagement from './pages/admin/BadgeManagement';
+import RideManagement from './pages/admin/RideManagement';
+import AnnouncementManagement from './pages/admin/AnnouncementManagement';
+import SupervisorLogin from './pages/supervisor/SupervisorLogin';
+import SupervisorLayout from './pages/supervisor/SupervisorLayout';
+import SupervisorDashboard from './pages/supervisor/SupervisorDashboard';
+import PaymentOverview from './pages/supervisor/PaymentOverview';
+import UserManagement from './pages/supervisor/UserManagement';
+import NotificationBroadcast from './pages/supervisor/NotificationBroadcast';
+import { SupervisorRoute } from './components/SupervisorRoute';
 
 const queryClient = new QueryClient();
 
@@ -66,6 +73,21 @@ const App = () => (
               <Route path="rides" element={<RideManagement />} />
               <Route path="announcements" element={<AnnouncementManagement />} />
             </Route>
+            
+            {/* Supervisor Routes */}
+            <Route path="/supervisor/login" element={<SupervisorLogin />} />
+            <Route path="/supervisor" element={<SupervisorRoute><SupervisorLayout /></SupervisorRoute>}>
+              <Route index element={<SupervisorDashboard />} />
+              <Route path="gallery" element={<GalleryManagement />} />
+              <Route path="hero" element={<HeroEditor />} />
+              <Route path="badges" element={<BadgeManagement />} />
+              <Route path="rides" element={<RideManagement />} />
+              <Route path="announcements" element={<AnnouncementManagement />} />
+              <Route path="payments" element={<PaymentOverview />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="notifications" element={<NotificationBroadcast />} />
+            </Route>
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
