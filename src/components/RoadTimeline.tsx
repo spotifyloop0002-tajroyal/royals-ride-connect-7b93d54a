@@ -1,7 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import roadImage from "@/assets/road-timeline.png";
+import { useTimelineAudio } from "@/hooks/useTimelineAudio";
+import { Volume2, VolumeX } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -57,6 +59,31 @@ const milestones: Milestone[] = [
 const RoadTimeline = () => {
   const timelineRef = useRef<HTMLDivElement>(null);
   const roadRef = useRef<HTMLDivElement>(null);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [audioInitialized, setAudioInitialized] = useState(false);
+  const playedSoundsRef = useRef<Set<number>>(new Set());
+  
+  const { initAudio, playMilestoneSound } = useTimelineAudio();
+
+  // Initialize audio on first user interaction
+  useEffect(() => {
+    const handleFirstInteraction = async () => {
+      if (!audioInitialized) {
+        await initAudio();
+        setAudioInitialized(true);
+        document.removeEventListener('click', handleFirstInteraction);
+        document.removeEventListener('scroll', handleFirstInteraction);
+      }
+    };
+
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('scroll', handleFirstInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('scroll', handleFirstInteraction);
+    };
+  }, [audioInitialized, initAudio]);
 
   useEffect(() => {
     if (!timelineRef.current) return;
@@ -106,6 +133,13 @@ const RoadTimeline = () => {
             start: "top 80%",
             end: "top 50%",
             toggleActions: "play none none reverse",
+            onEnter: () => {
+              // Play sound when milestone enters view (only once)
+              if (soundEnabled && audioInitialized && !playedSoundsRef.current.has(index)) {
+                playMilestoneSound(index);
+                playedSoundsRef.current.add(index);
+              }
+            },
           },
         }
       );
@@ -134,7 +168,7 @@ const RoadTimeline = () => {
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, []);
+  }, [soundEnabled, audioInitialized, playMilestoneSound]);
 
   return (
     <section className="relative min-h-screen bg-black py-24 overflow-hidden">
@@ -143,6 +177,19 @@ const RoadTimeline = () => {
       
       {/* Gradient Fade at Bottom */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background via-background/50 to-transparent z-20 pointer-events-none" />
+      
+      {/* Sound Toggle Button */}
+      <button
+        onClick={() => setSoundEnabled(!soundEnabled)}
+        className="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-zinc-900 border-2 border-primary/30 hover:border-primary hover:shadow-[0_0_30px_rgba(255,0,0,0.4)] transition-all duration-300 group"
+        aria-label={soundEnabled ? "Mute sounds" : "Enable sounds"}
+      >
+        {soundEnabled ? (
+          <Volume2 className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+        ) : (
+          <VolumeX className="w-6 h-6 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-transform" />
+        )}
+      </button>
       
       {/* Section Title */}
       <div className="container mx-auto px-4 mb-16 max-w-7xl relative z-10">
