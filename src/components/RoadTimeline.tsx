@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import roadImage from "@/assets/road-timeline.png";
+import journeyBg from "@/assets/our-journey-bg.png";
 import { useTimelineAudio } from "@/hooks/useTimelineAudio";
 import { Volume2, VolumeX } from "lucide-react";
 
@@ -171,6 +172,15 @@ const RoadTimeline = () => {
 
   return (
     <section className="relative min-h-screen bg-black py-24 overflow-hidden">
+      {/* Background Image - Behind everything */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={journeyBg}
+          alt="Journey Background"
+          className="w-full h-full object-cover opacity-30"
+        />
+      </div>
+
       {/* Gradient Fade at Top */}
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background via-background/50 to-transparent z-20 pointer-events-none" />
       
