@@ -11,18 +11,33 @@ export default function Leaderboard() {
   const { data: topRiders, isLoading } = useQuery({
     queryKey: ['leaderboard'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Fetch all profiles
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          user_badges (
-            badge_id
-          )
-        `)
+        .select('*')
         .order('total_km_ridden', { ascending: false, nullsFirst: false });
       
-      if (error) throw error;
-      return data || [];
+      if (profilesError) throw profilesError;
+      if (!profiles) return [];
+
+      // Fetch badge counts for all users
+      const { data: badgeCounts, error: badgesError } = await supabase
+        .from('user_badges')
+        .select('user_id');
+      
+      if (badgesError) throw badgesError;
+
+      // Count badges per user
+      const badgeCountMap = (badgeCounts || []).reduce((acc, badge) => {
+        acc[badge.user_id] = (acc[badge.user_id] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      // Combine profiles with badge counts
+      return profiles.map(profile => ({
+        ...profile,
+        user_badges: Array(badgeCountMap[profile.id] || 0).fill({ badge_id: null })
+      }));
     },
   });
 
