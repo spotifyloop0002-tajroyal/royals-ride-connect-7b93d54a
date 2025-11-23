@@ -46,9 +46,21 @@ export default function GalleryManagement() {
 
   const createAlbumMutation = useMutation({
     mutationFn: async () => {
+      const title = newAlbum.title.trim();
+      const category = newAlbum.category.trim();
+      const description = newAlbum.description?.trim() || null;
+
+      if (!title || !category) {
+        throw new Error("Please enter an album title and category");
+      }
+
+      if (["NA", "N/A", "na", "n/a"].includes(category) || ["NA", "N/A", "na", "n/a"].includes(title)) {
+        throw new Error("Album title and category cannot be 'NA'. Please use meaningful names.");
+      }
+
       const { error } = await supabase
         .from('gallery_albums')
-        .insert([newAlbum]);
+        .insert([{ title, category, description }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -56,8 +68,12 @@ export default function GalleryManagement() {
       setNewAlbum({ title: "", category: "", description: "" });
       toast.success('Album created successfully');
     },
-    onError: (error) => {
-      toast.error('Failed to create album: ' + error.message);
+    onError: (error: any) => {
+      if (String(error.message).includes('gallery_albums_category_check')) {
+        toast.error('Invalid category. Please use a real category name (not "NA").');
+      } else {
+        toast.error('Failed to create album: ' + error.message);
+      }
     },
   });
 
