@@ -50,24 +50,44 @@ export const useTimelineAudio = () => {
     }
   }, []);
 
-  // Play sound for a milestone
+  // Track currently playing sources for each milestone
+  const playingSourcesRef = useRef<Map<number, AudioBufferSourceNode>>(new Map());
+
+  // Play sound for a milestone (restarts from beginning on each call)
   const playMilestoneSound = useCallback((milestoneIndex: number) => {
     if (!audioContextRef.current || !soundBuffersRef.current.has(milestoneIndex)) {
       return;
     }
 
     try {
+      // Stop any currently playing sound for this milestone
+      const existingSource = playingSourcesRef.current.get(milestoneIndex);
+      if (existingSource) {
+        try {
+          existingSource.stop();
+        } catch (e) {
+          // Source may already be stopped
+        }
+        playingSourcesRef.current.delete(milestoneIndex);
+      }
+
       const source = audioContextRef.current.createBufferSource();
       const gainNode = audioContextRef.current.createGain();
       
       source.buffer = soundBuffersRef.current.get(milestoneIndex)!;
       
-      // Subtle volume (0.15 = 15% volume)
-      gainNode.gain.value = 0.15;
+      // Subtle volume (0.2 = 20% volume)
+      gainNode.gain.value = 0.2;
       
       source.connect(gainNode);
       gainNode.connect(audioContextRef.current.destination);
       
+      // Clean up reference when sound ends
+      source.onended = () => {
+        playingSourcesRef.current.delete(milestoneIndex);
+      };
+      
+      playingSourcesRef.current.set(milestoneIndex, source);
       source.start(0);
       
       console.log(`Playing sound for milestone ${milestoneIndex}`);

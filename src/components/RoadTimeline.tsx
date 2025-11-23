@@ -61,9 +61,15 @@ const RoadTimeline = () => {
   const roadRef = useRef<HTMLDivElement>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [audioInitialized, setAudioInitialized] = useState(false);
-  const playedSoundsRef = useRef<Set<number>>(new Set());
   
   const { initAudio, playMilestoneSound } = useTimelineAudio();
+
+  // Handle milestone hover
+  const handleMilestoneHover = (index: number) => {
+    if (soundEnabled && audioInitialized) {
+      playMilestoneSound(index);
+    }
+  };
 
   // Initialize audio on first user interaction
   useEffect(() => {
@@ -133,13 +139,6 @@ const RoadTimeline = () => {
             start: "top 80%",
             end: "top 50%",
             toggleActions: "play none none reverse",
-            onEnter: () => {
-              // Play sound when milestone enters view (only once)
-              if (soundEnabled && audioInitialized && !playedSoundsRef.current.has(index)) {
-                playMilestoneSound(index);
-                playedSoundsRef.current.add(index);
-              }
-            },
           },
         }
       );
@@ -168,7 +167,7 @@ const RoadTimeline = () => {
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, [soundEnabled, audioInitialized, playMilestoneSound]);
+  }, []);
 
   return (
     <section className="relative min-h-screen bg-black py-24 overflow-hidden">
@@ -230,7 +229,10 @@ const RoadTimeline = () => {
                     {/* Left Side Card */}
                     <div className="milestone-card flex justify-end">
                       <div className="relative max-w-md">
-                        <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border-2 border-primary/30 rounded-lg p-8 hover:border-primary hover:shadow-[0_0_40px_rgba(255,0,0,0.3)] transition-all duration-300 group">
+                        <div 
+                          className="bg-gradient-to-br from-zinc-900 to-zinc-950 border-2 border-primary/30 rounded-lg p-8 hover:border-primary hover:shadow-[0_0_40px_rgba(255,0,0,0.3)] transition-all duration-300 group cursor-pointer"
+                          onMouseEnter={() => handleMilestoneHover(index)}
+                        >
                           <div className="text-6xl font-black mb-3 text-primary" style={{ fontFamily: 'Impact, sans-serif' }}>
                             {milestone.year}
                           </div>
@@ -255,7 +257,10 @@ const RoadTimeline = () => {
                     {/* Right Side Card */}
                     <div className="milestone-card flex justify-start">
                       <div className="relative max-w-md">
-                        <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border-2 border-primary/30 rounded-lg p-8 hover:border-primary hover:shadow-[0_0_40px_rgba(255,0,0,0.3)] transition-all duration-300 group">
+                        <div 
+                          className="bg-gradient-to-br from-zinc-900 to-zinc-950 border-2 border-primary/30 rounded-lg p-8 hover:border-primary hover:shadow-[0_0_40px_rgba(255,0,0,0.3)] transition-all duration-300 group cursor-pointer"
+                          onMouseEnter={() => handleMilestoneHover(index)}
+                        >
                           <div className="text-6xl font-black mb-3 text-primary" style={{ fontFamily: 'Impact, sans-serif' }}>
                             {milestone.year}
                           </div>
@@ -276,7 +281,10 @@ const RoadTimeline = () => {
 
               {/* Mobile Layout - Centered */}
               <div className="md:hidden milestone-card">
-                <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border-2 border-primary/30 rounded-lg p-6 hover:border-primary hover:shadow-[0_0_40px_rgba(255,0,0,0.3)] transition-all duration-300">
+                <div 
+                  className="bg-gradient-to-br from-zinc-900 to-zinc-950 border-2 border-primary/30 rounded-lg p-6 hover:border-primary hover:shadow-[0_0_40px_rgba(255,0,0,0.3)] transition-all duration-300 cursor-pointer"
+                  onMouseEnter={() => handleMilestoneHover(index)}
+                >
                   <div className="text-5xl font-black mb-2 text-primary" style={{ fontFamily: 'Impact, sans-serif' }}>
                     {milestone.year}
                   </div>
