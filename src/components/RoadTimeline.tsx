@@ -116,22 +116,27 @@ const RoadTimeline = () => {
 
   return (
     <section className="relative min-h-screen bg-black py-24 overflow-hidden">
+      {/* Gradient Fade at Top */}
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background via-background/50 to-transparent z-20 pointer-events-none" />
+      
       {/* Section Title */}
-      <div className="container mx-auto px-4 mb-16 max-w-7xl">
+      <div className="container mx-auto px-4 mb-16 max-w-7xl relative z-10">
         <h2 className="text-5xl md:text-7xl font-black text-left mb-4" style={{ fontFamily: 'Impact, Arial Black, sans-serif' }}>
           <span className="text-gradient">OUR JOURNEY</span>
         </h2>
         <p className="text-left text-muted-foreground text-lg">Two decades of adventure on two wheels</p>
       </div>
 
-      {/* Road Background - Fixed in center */}
+      {/* Road Background - Starts lower, appears with first milestone */}
       <div 
-        className="absolute left-1/2 top-0 -translate-x-1/2 w-[200px] h-full pointer-events-none opacity-40"
+        className="absolute left-1/2 -translate-x-1/2 w-[200px] pointer-events-none opacity-40"
         style={{
           backgroundImage: `url(${roadImage})`,
           backgroundSize: 'contain',
           backgroundRepeat: 'repeat-y',
-          backgroundPosition: 'center',
+          backgroundPosition: 'top center',
+          top: '280px',
+          height: 'calc(100% - 280px)',
         }}
       />
 
