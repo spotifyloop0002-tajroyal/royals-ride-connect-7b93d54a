@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, ChevronLeft, ChevronRight, Maximize, Minimize } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import gsap from "gsap";
 
@@ -20,11 +20,18 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
+  const [zoom, setZoom] = useState(1);
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
+  const [touchEnd, setTouchEnd] = useState<{ x: number; y: number } | null>(null);
+  const [pinchDistance, setPinchDistance] = useState<number | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
 
   const currentPhoto = photos[currentIndex];
   const totalPhotos = photos.length;
+
+  const minSwipeDistance = 50;
 
   // Navigation functions
   const goToNext = () => {
@@ -33,6 +40,7 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
     } else {
       setCurrentIndex(0); // Loop back to first
     }
+    setZoom(1); // Reset zoom on navigation
   };
 
   const goToPrevious = () => {
@@ -41,6 +49,20 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
     } else {
       setCurrentIndex(totalPhotos - 1); // Loop to last
     }
+    setZoom(1); // Reset zoom on navigation
+  };
+
+  // Zoom functions
+  const zoomIn = () => {
+    setZoom((prev) => Math.min(prev + 0.5, 3));
+  };
+
+  const zoomOut = () => {
+    setZoom((prev) => Math.max(prev - 0.5, 1));
+  };
+
+  const resetZoom = () => {
+    setZoom(1);
   };
 
   // Fullscreen toggle
@@ -85,6 +107,60 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
+
+  // Touch handlers for swipe navigation
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      setTouchEnd(null);
+      setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+    } else if (e.touches.length === 2) {
+      // Pinch zoom start
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+      setPinchDistance(distance);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      setTouchEnd({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+    } else if (e.touches.length === 2 && pinchDistance) {
+      // Pinch zoom
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+      const scale = distance / pinchDistance;
+      setZoom((prev) => Math.max(1, Math.min(prev * scale, 3)));
+      setPinchDistance(distance);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distanceX = touchStart.x - touchEnd.x;
+    const distanceY = Math.abs(touchStart.y - touchEnd.y);
+
+    // Only trigger swipe if horizontal movement is dominant
+    if (Math.abs(distanceX) > minSwipeDistance && Math.abs(distanceX) > distanceY) {
+      if (distanceX > 0) {
+        goToNext();
+      } else {
+        goToPrevious();
+      }
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
+    setPinchDistance(null);
+  };
 
   // Animate image transitions
   useEffect(() => {
@@ -136,6 +212,41 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
             size="icon"
             onClick={(e) => {
               e.stopPropagation();
+              zoomOut();
+            }}
+            disabled={zoom <= 1}
+            className="text-white hover:bg-white/20 disabled:opacity-50"
+          >
+            <ZoomOut className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              resetZoom();
+            }}
+            className="text-white hover:bg-white/20 text-xs px-3"
+          >
+            {Math.round(zoom * 100)}%
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              zoomIn();
+            }}
+            disabled={zoom >= 3}
+            className="text-white hover:bg-white/20 disabled:opacity-50"
+          >
+            <ZoomIn className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
               toggleFullscreen();
             }}
             className="text-white hover:bg-white/20"
@@ -168,8 +279,12 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
 
       {/* Main Image Container */}
       <div
-        className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center"
+        ref={imageContainerRef}
+        className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center overflow-hidden touch-none"
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {imageLoading && (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -180,7 +295,8 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
           ref={imageRef}
           src={currentPhoto.photo_url}
           alt={currentPhoto.caption || "Gallery photo"}
-          className="max-w-full max-h-[90vh] object-contain"
+          className="max-w-full max-h-[90vh] object-contain transition-transform duration-200"
+          style={{ transform: `scale(${zoom})` }}
           onLoad={() => setImageLoading(false)}
         />
       </div>
@@ -205,9 +321,12 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
         </div>
       )}
 
-      {/* Keyboard Hints (optional, can be shown initially) */}
-      <div className="absolute bottom-4 right-4 text-xs text-muted-foreground bg-black/50 px-3 py-2 rounded">
+      {/* Keyboard/Touch Hints */}
+      <div className="absolute bottom-4 right-4 text-xs text-muted-foreground bg-black/50 px-3 py-2 rounded hidden sm:block">
         <p>← → to navigate • ESC to close • Space for next</p>
+      </div>
+      <div className="absolute bottom-4 right-4 text-xs text-muted-foreground bg-black/50 px-3 py-2 rounded sm:hidden">
+        <p>Swipe to navigate • Pinch to zoom</p>
       </div>
     </div>
   );
