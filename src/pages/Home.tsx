@@ -65,9 +65,9 @@ const Home = () => {
   return (
     <Layout>
       <ParticleBackground />
+      <HeroSlider />
+      
       <div className="container mx-auto px-4 py-8">
-        <HeroSlider />
-
         <section ref={sectionRef} className="mt-16">
           <div className="max-w-4xl mx-auto text-center mb-12 content-block">
             <h2 className="text-4xl md:text-5xl font-black mb-6 text-gradient">

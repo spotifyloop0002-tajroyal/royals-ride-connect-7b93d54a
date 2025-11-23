@@ -82,14 +82,14 @@ const HeroSlider = () => {
 
   if (isLoading) {
     return (
-      <div className="relative h-[600px] overflow-hidden rounded-lg flex items-center justify-center bg-muted">
+      <div className="relative h-screen w-full overflow-hidden -mt-20 flex items-center justify-center bg-muted">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="relative h-[600px] overflow-hidden rounded-lg">
+    <div className="relative h-screen w-full overflow-hidden -mt-20">
       {/* Animated gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 animate-pulse z-10 pointer-events-none" />
       
