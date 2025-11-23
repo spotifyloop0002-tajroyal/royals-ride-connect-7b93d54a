@@ -106,7 +106,7 @@ const HeroSlider = () => {
             className="w-full h-full object-cover"
             loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
         </div>
       ))}
 
@@ -114,9 +114,9 @@ const HeroSlider = () => {
         <div className="max-w-4xl">
           <h1 
             ref={titleRef}
-            className="text-5xl md:text-7xl font-black mb-4 text-gradient drop-shadow-2xl"
+            className="text-5xl md:text-7xl font-black mb-4 drop-shadow-2xl"
             style={{ 
-              textShadow: '0 0 30px rgba(255,0,0,0.5), 0 0 60px rgba(255,0,0,0.3)',
+              color: 'hsl(220, 90%, 30%)',
               letterSpacing: '0.05em'
             }}
           >
@@ -125,7 +125,6 @@ const HeroSlider = () => {
           <p 
             ref={subtitleRef}
             className="text-xl md:text-3xl text-electric font-bold mb-8 drop-shadow-lg"
-            style={{ textShadow: '0 0 20px rgba(0,255,255,0.5)' }}
           >
             Since 2005 – Agra's First Riders Club
           </p>
