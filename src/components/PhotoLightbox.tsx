@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { X, ChevronLeft, ChevronRight, Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Maximize, Minimize, ZoomIn, ZoomOut, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import gsap from "gsap";
 
 interface Photo {
@@ -27,6 +28,7 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const currentPhoto = photos[currentIndex];
   const totalPhotos = photos.length;
@@ -73,6 +75,53 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
     } else {
       document.exitFullscreen();
       setIsFullscreen(false);
+    }
+  };
+
+  // Share functionality
+  const handleShare = async () => {
+    try {
+      // Try to use Web Share API (works on mobile, can share to Instagram)
+      if (navigator.share) {
+        const response = await fetch(currentPhoto.photo_url);
+        const blob = await response.blob();
+        const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+        
+        await navigator.share({
+          title: albumTitle || 'Photo',
+          text: currentPhoto.caption || 'Check out this photo!',
+          files: [file]
+        });
+        
+        toast({
+          title: "Shared successfully!",
+          description: "Photo shared via native share",
+        });
+      } else {
+        // Fallback: Copy link to clipboard
+        await navigator.clipboard.writeText(currentPhoto.photo_url);
+        toast({
+          title: "Link copied!",
+          description: "Photo URL copied to clipboard",
+        });
+      }
+    } catch (error) {
+      // If user cancels or error occurs, copy URL as fallback
+      if (error instanceof Error && error.name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(currentPhoto.photo_url);
+          toast({
+            title: "Link copied!",
+            description: "Photo URL copied to clipboard",
+          });
+        } catch {
+          toast({
+            title: "Share failed",
+            description: "Unable to share photo",
+            variant: "destructive",
+          });
+        }
+      }
     }
   };
 
@@ -241,6 +290,17 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
             className="text-white hover:bg-white/20 disabled:opacity-50"
           >
             <ZoomIn className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleShare();
+            }}
+            className="text-white hover:bg-white/20"
+          >
+            <Share2 className="h-5 w-5" />
           </Button>
           <Button
             variant="ghost"
