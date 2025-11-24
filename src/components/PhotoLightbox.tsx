@@ -252,8 +252,12 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
     <div
       ref={containerRef}
       className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
-      onClick={onClose}
     >
+      {/* Clickable backdrop to close */}
+      <div
+        className="absolute inset-0 bg-black/80"
+        onClick={onClose}
+      />
       {/* Top Controls Bar */}
       <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent p-4 flex items-center justify-between">
         <div className="text-white">
