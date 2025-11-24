@@ -37,6 +37,7 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
 
   // Navigation functions
   const goToNext = () => {
+    console.log('goToNext called');
     if (currentIndex < totalPhotos - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
@@ -46,6 +47,7 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
   };
 
   const goToPrevious = () => {
+    console.log('goToPrevious called');
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     } else {
@@ -56,19 +58,23 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
 
   // Zoom functions
   const zoomIn = () => {
+    console.log('zoomIn called');
     setZoom((prev) => Math.min(prev + 0.5, 3));
   };
 
   const zoomOut = () => {
+    console.log('zoomOut called');
     setZoom((prev) => Math.max(prev - 0.5, 1));
   };
 
   const resetZoom = () => {
+    console.log('resetZoom called');
     setZoom(1);
   };
 
   // Fullscreen toggle
   const toggleFullscreen = () => {
+    console.log('toggleFullscreen called');
     if (!document.fullscreenElement) {
       containerRef.current?.requestFullscreen();
       setIsFullscreen(true);
@@ -80,6 +86,7 @@ const PhotoLightbox = ({ photos, initialIndex, onClose, albumTitle }: PhotoLight
 
   // Share functionality
   const handleShare = async () => {
+    console.log('handleShare called');
     try {
       // Try to use Web Share API (works on mobile, can share to Instagram)
       if (navigator.share) {
