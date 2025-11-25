@@ -35,7 +35,7 @@ const Navigation = () => {
 
   return (
     <nav className={cn(
-      "navbar sticky top-0 z-50 transition-all duration-300",
+      "navbar sticky top-0 z-50 transition-all duration-300 relative",
       isScrolled 
         ? "glass-effect shadow-lg shadow-primary/10" 
         : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",

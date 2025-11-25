@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import EnergyButton from "./EnergyButton";
+import GoldParticles from "./GoldParticles";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
@@ -90,6 +91,9 @@ const HeroSlider = () => {
 
   return (
     <div className="relative h-screen w-full overflow-hidden -mt-20">
+      {/* Gold particles - only in premium mode */}
+      {document.body.classList.contains("premium-dark") && <GoldParticles />}
+      
       {/* Animated gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 animate-pulse z-10 pointer-events-none" />
       
@@ -114,9 +118,8 @@ const HeroSlider = () => {
         <div className="max-w-4xl">
           <h1 
             ref={titleRef}
-            className="text-5xl md:text-7xl font-black mb-4 drop-shadow-2xl"
+            className="text-5xl md:text-7xl font-black mb-4 drop-shadow-2xl text-foreground"
             style={{ 
-              color: 'hsl(220, 90%, 30%)',
               letterSpacing: '0.05em'
             }}
           >

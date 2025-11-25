@@ -34,6 +34,7 @@ import PaymentOverview from './pages/supervisor/PaymentOverview';
 import UserManagement from './pages/supervisor/UserManagement';
 import NotificationBroadcast from './pages/supervisor/NotificationBroadcast';
 import { SupervisorRoute } from './components/SupervisorRoute';
+import CursorTrail from './components/CursorTrail';
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <CursorTrail />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />

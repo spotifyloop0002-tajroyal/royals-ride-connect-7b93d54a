@@ -259,8 +259,75 @@ body.premium-dark img:hover {
   transition: box-shadow 0.3s ease;
 }
 
-body.premium-dark .bg-card:hover {
-  box-shadow: 0 0 25px rgba(213, 155, 43, 0.3);
-  border-color: rgba(213, 155, 43, 0.3);
-  transition: all 0.3s ease;
+body.premium-dark [class*="Card"]:hover,
+body.premium-dark [class*="card"]:hover {
+  box-shadow: 0 0 25px rgba(213, 155, 43, 0.3) !important;
+  border-color: rgba(213, 155, 43, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Pulsing gold gradient overlay for navbar in premium mode */
+body.premium-dark .navbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(213, 155, 43, 0.1), transparent);
+  animation: navbarPulse 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body.premium-dark .navbar > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Pulsing gold gradient for footer in premium mode */
+body.premium-dark footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(213, 155, 43, 0.05), transparent, rgba(213, 155, 43, 0.08));
+  animation: footerPulse 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes navbarPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes footerPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+/* Gold cursor trail effect in premium mode */
+body.premium-dark .cursor-trail {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(213, 155, 43, 0.6), transparent);
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease-out;
+}
+
+body.premium-dark .cursor-trail-dot {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #D59B2B;
+  pointer-events: none;
+  z-index: 10000;
+  box-shadow: 0 0 10px rgba(213, 155, 43, 0.8);
 }
