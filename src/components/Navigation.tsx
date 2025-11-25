@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import NotificationBell from "./NotificationBell";
+import ThemeToggle from "./ThemeToggle";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +35,7 @@ const Navigation = () => {
 
   return (
     <nav className={cn(
-      "sticky top-0 z-50 transition-all duration-300",
+      "navbar sticky top-0 z-50 transition-all duration-300",
       isScrolled 
         ? "glass-effect shadow-lg shadow-primary/10" 
         : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
@@ -50,6 +51,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
+            <ThemeToggle />
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -105,6 +107,9 @@ const Navigation = () => {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden py-4 animate-slide-in">
+            <div className="px-4 mb-3">
+              <ThemeToggle />
+            </div>
             {navLinks.map((link) => (
               <Link
                 key={link.path}

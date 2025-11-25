@@ -168,3 +168,87 @@ All colors MUST be HSL.
     transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.05);
   }
 }
+
+/* Premium Dark Theme - Default Theme */
+body.premium-dark {
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+}
+
+/* Gold color for premium theme */
+body.premium-dark {
+  --gold: 42 81% 51%;
+}
+
+/* Navbar in premium mode */
+body.premium-dark .navbar {
+  background: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.premium-dark nav a {
+  color: #D59B2B !important;
+}
+
+body.premium-dark nav .text-foreground {
+  color: #D59B2B !important;
+}
+
+/* Headings in premium mode */
+body.premium-dark h1,
+body.premium-dark h2,
+body.premium-dark h3 {
+  color: #D59B2B !important;
+}
+
+/* Premium buttons */
+.btn-gold {
+  background: #D59B2B;
+  color: #000;
+  border-radius: 6px;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(213, 155, 43, 0.4);
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+  box-shadow: 0 0 20px rgba(213, 155, 43, 0.6);
+  transform: translateY(-2px);
+}
+
+.btn-outline-gold {
+  border: 2px solid #D59B2B;
+  color: #D59B2B;
+  background: transparent;
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+  background: #D59B2B;
+  color: #000;
+}
+
+/* Hero overlay in premium mode */
+body.premium-dark .hero-overlay {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* Cards in premium mode */
+body.premium-dark .bg-card {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Text colors in premium mode */
+body.premium-dark .text-foreground {
+  color: #FFFFFF !important;
+}
+
+body.premium-dark .text-muted-foreground {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
