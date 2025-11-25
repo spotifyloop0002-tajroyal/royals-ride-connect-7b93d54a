@@ -139,6 +139,7 @@ const Rides = () => {
                             <TooltipTrigger asChild>
                               <Button 
                                 size="lg"
+                                variant="gold"
                                 onClick={() => handleRegisterClick(ride)}
                                 disabled={!ride.payment_link}
                               >
@@ -322,6 +323,7 @@ const Rides = () => {
               Cancel
             </Button>
             <Button 
+              variant="gold"
               onClick={handleConfirmRegistration}
               disabled={registerForRideMutation.isPending}
             >

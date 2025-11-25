@@ -41,7 +41,7 @@ const Contact = () => {
                 <p className="text-muted-foreground mb-4">
                   Join our active WhatsApp community
                 </p>
-                <Button className="w-full">Join WhatsApp Group</Button>
+                <Button variant="gold" className="w-full">Join WhatsApp Group</Button>
               </CardContent>
             </Card>
 

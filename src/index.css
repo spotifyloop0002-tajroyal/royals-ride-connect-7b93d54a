@@ -252,3 +252,15 @@ body.premium-dark .text-foreground {
 body.premium-dark .text-muted-foreground {
   color: rgba(255, 255, 255, 0.7) !important;
 }
+
+/* Gold glow effects on hover for images and cards in premium mode */
+body.premium-dark img:hover {
+  box-shadow: 0 0 30px rgba(213, 155, 43, 0.5);
+  transition: box-shadow 0.3s ease;
+}
+
+body.premium-dark .bg-card:hover {
+  box-shadow: 0 0 25px rgba(213, 155, 43, 0.3);
+  border-color: rgba(213, 155, 43, 0.3);
+  transition: all 0.3s ease;
+}

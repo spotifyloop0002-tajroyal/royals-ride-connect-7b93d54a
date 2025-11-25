@@ -116,7 +116,7 @@ const Membership = () => {
                     <Input id="photo" type="file" accept="image/*" />
                   </div>
 
-                  <Button className="w-full" size="lg" type="button">
+                  <Button variant="gold" className="w-full" size="lg" type="button">
                     Pay ₹999 & Join Now
                   </Button>
 

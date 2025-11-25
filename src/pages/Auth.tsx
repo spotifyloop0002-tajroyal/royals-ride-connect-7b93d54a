@@ -98,7 +98,7 @@ const Auth = () => {
                         required
                       />
                     </div>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
+                    <Button variant="gold" type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? "Logging in..." : "Login"}
                     </Button>
                   </form>
@@ -162,7 +162,7 @@ const Auth = () => {
                         minLength={6}
                       />
                     </div>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
+                    <Button variant="gold" type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? "Creating account..." : "Sign Up"}
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
