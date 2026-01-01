@@ -62,43 +62,124 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 220 100% 8%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 8%;
+    --foreground: 45 20% 90%;
     
-    --card: 220 90% 12%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 12%;
+    --card-foreground: 45 20% 90%;
     
-    --popover: 220 90% 12%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 45 20% 90%;
     
-    --primary: 4 90% 58%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 43 74% 49%;
+    --primary-foreground: 0 0% 8%;
     
-    --secondary: 217 91% 60%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 25 60% 45%;
+    --secondary-foreground: 45 20% 90%;
     
-    --muted: 220 30% 18%;
-    --muted-foreground: 220 10% 65%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 45 10% 65%;
     
-    --accent: 340 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 145 50% 35%;
+    --accent-foreground: 45 20% 90%;
     
     --electric: 187 100% 50%;
-    --electric-foreground: 220 100% 8%;
+    --electric-foreground: 0 0% 8%;
     
     --neon: 290 100% 60%;
     --neon-foreground: 0 0% 100%;
     
     --chrome: 0 0% 35%;
-    --chrome-foreground: 0 0% 98%;
+    --chrome-foreground: 45 20% 90%;
     
     --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 45 20% 90%;
     
-    --border: 220 30% 18%;
-    --input: 220 30% 18%;
-    --ring: 4 90% 58%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 43 74% 49%;
   }
+}
+
+/* Dark mode base styles */
+.dark body,
+.dark {
+  background-color: hsl(0 0% 8%);
+  color: hsl(45 20% 90%);
+}
+
+/* Dark mode typography - Cinzel for headings */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  font-family: 'Cinzel', serif;
+  color: hsl(43 74% 49%);
+}
+
+/* Dark mode nav links */
+.dark nav a {
+  color: hsl(43 74% 49%);
+}
+
+/* Dark mode glass effect */
+.dark .glass,
+.dark .bg-card {
+  background: hsl(0 0% 12% / 0.4);
+  backdrop-filter: blur(24px);
+  border: 1px solid hsl(0 0% 20% / 0.5);
+}
+
+/* Dark mode hover effects */
+.dark .hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px hsl(43 74% 49% / 0.2);
+}
+
+/* Dark mode gold glow animation */
+.dark .animate-gold-glow {
+  animation: gold-glow 2s ease-in-out infinite;
+}
+
+/* Dark mode input styling */
+.dark input,
+.dark textarea,
+.dark select {
+  background: hsl(0 0% 12%);
+  border-color: hsl(0 0% 20%);
+  color: hsl(45 20% 90%);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: hsl(45 10% 50%);
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: hsl(43 74% 49%);
+  box-shadow: 0 0 0 2px hsl(43 74% 49% / 0.2);
+}
+
+/* Dark mode scrollbar */
+.dark::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark::-webkit-scrollbar-track {
+  background: hsl(0 0% 12%);
+}
+
+.dark::-webkit-scrollbar-thumb {
+  background: hsl(43 74% 49% / 0.5);
+  border-radius: 4px;
+}
+
+.dark::-webkit-scrollbar-thumb:hover {
+  background: hsl(43 74% 49% / 0.7);
 }
 
 @layer base {

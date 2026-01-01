@@ -197,7 +197,7 @@ export default function AnnouncementManagement() {
                     <h3 className="font-semibold text-lg">{announcement.title}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{announcement.description}</p>
                     <div className="flex items-center gap-4 mt-2">
-                      <span className={`text-xs px-2 py-1 rounded ${announcement.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      <span className={`text-xs px-2 py-1 rounded ${announcement.is_active ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
                         {announcement.is_active ? 'Active' : 'Inactive'}
                       </span>
                       {announcement.show_as_popup && (
