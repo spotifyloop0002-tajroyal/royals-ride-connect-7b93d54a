@@ -202,7 +202,7 @@ export default function ProfileEditor() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Edit Your Profile</CardTitle>
+              <CardTitle className="text-foreground">Edit Your Profile</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Member ID - Locked */}

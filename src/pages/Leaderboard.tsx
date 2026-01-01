@@ -76,7 +76,7 @@ export default function Leaderboard() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold truncate">{rider.full_name}</h3>
+                <h3 className="font-semibold truncate text-foreground">{rider.full_name}</h3>
                 <Badge variant="outline" className="text-xs">
                   {rider.member_id}
                 </Badge>
@@ -84,7 +84,7 @@ export default function Leaderboard() {
               <p className="text-sm text-muted-foreground">@{rider.username}</p>
             </div>
             <div className="text-right">
-              <p className="font-bold text-lg">{value}</p>
+              <p className="font-bold text-lg text-foreground">{value}</p>
               {rider.bike_model && (
                 <p className="text-xs text-muted-foreground truncate max-w-[150px]">{rider.bike_model}</p>
               )}
@@ -113,7 +113,7 @@ export default function Leaderboard() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-2">Leaderboard</h1>
+            <h1 className="text-4xl font-bold mb-2 text-gradient-gold font-cinzel">Leaderboard</h1>
             <p className="text-muted-foreground">Celebrate our top riders</p>
           </div>
 

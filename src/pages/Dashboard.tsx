@@ -127,7 +127,7 @@ const Dashboard = () => {
             <CardContent className="p-8">
               <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="text-center md:text-left">
-                  <h1 className="text-4xl font-bold mb-2">Welcome back, Rider!</h1>
+                  <h1 className="text-4xl font-bold mb-2 text-primary-foreground">Welcome back, Rider!</h1>
                   <p className="text-lg opacity-90">Your next adventure awaits.</p>
                 </div>
                 <Button size="lg" variant="secondary" asChild>
@@ -145,7 +145,7 @@ const Dashboard = () => {
                   <div className="flex items-center gap-4">
                     <Bell className="w-8 h-8 text-accent" />
                     <div>
-                      <h3 className="font-semibold text-lg">{upcomingRide.title}</h3>
+                      <h3 className="font-semibold text-lg text-foreground">{upcomingRide.title}</h3>
                       <p className="text-muted-foreground">
                         {upcomingRide.date} • {upcomingRide.distance}
                       </p>
@@ -181,7 +181,7 @@ const Dashboard = () => {
                       <div className="text-6xl">{userData.photo}</div>
                     )}
                   </div>
-                  <h2 className="text-2xl font-bold mb-1">{userData.name}</h2>
+                  <h2 className="text-2xl font-bold mb-1 text-foreground">{userData.name}</h2>
                   <p className="text-muted-foreground mb-2">@{userData.username}</p>
                   <div className="flex items-center justify-center gap-2 mb-4">
                     <IdCard className="w-4 h-4 text-primary" />

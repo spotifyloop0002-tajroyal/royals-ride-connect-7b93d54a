@@ -61,7 +61,7 @@ export default function RideHistory() {
     <Layout>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl font-bold mb-2">Your Ride History</h1>
+          <h1 className="text-4xl font-bold mb-2 text-gradient-gold font-cinzel">Your Ride History</h1>
           <p className="text-muted-foreground mb-8">Track all your adventures</p>
 
           {/* Stats Overview */}
@@ -92,7 +92,7 @@ export default function RideHistory() {
           {/* Upcoming Rides */}
           {upcomingRides.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Upcoming Rides</h2>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Upcoming Rides</h2>
               <div className="space-y-4">
                 {upcomingRides.map((registration: any) => (
                   <Card key={registration.id} className="border-accent">
@@ -100,7 +100,7 @@ export default function RideHistory() {
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <h3 className="text-xl font-semibold">{registration.rides.title}</h3>
+                            <h3 className="text-xl font-semibold text-foreground">{registration.rides.title}</h3>
                             <Badge variant="secondary">{registration.rides.ride_type}</Badge>
                             <Badge variant="outline">{registration.rides.difficulty}</Badge>
                           </div>
@@ -131,7 +131,7 @@ export default function RideHistory() {
 
           {/* Completed Rides */}
           <div>
-            <h2 className="text-2xl font-bold mb-4">Completed Rides</h2>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Completed Rides</h2>
             {completedRides.length > 0 ? (
               <div className="space-y-4">
                 {completedRides.map((registration: any) => (
@@ -140,7 +140,7 @@ export default function RideHistory() {
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <h3 className="text-xl font-semibold">{registration.rides.title}</h3>
+                            <h3 className="text-xl font-semibold text-foreground">{registration.rides.title}</h3>
                             <Badge variant="secondary">{registration.rides.ride_type}</Badge>
                             <Badge variant="outline">{registration.rides.difficulty}</Badge>
                           </div>
