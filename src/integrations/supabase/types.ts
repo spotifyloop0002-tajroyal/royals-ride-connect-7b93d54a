@@ -276,6 +276,7 @@ export type Database = {
           emergency_contact: string | null
           full_name: string
           id: string
+          is_suspended: boolean | null
           license_number: string | null
           member_id: string
           member_since: string | null
@@ -298,6 +299,7 @@ export type Database = {
           emergency_contact?: string | null
           full_name: string
           id: string
+          is_suspended?: boolean | null
           license_number?: string | null
           member_id: string
           member_since?: string | null
@@ -320,6 +322,7 @@ export type Database = {
           emergency_contact?: string | null
           full_name?: string
           id?: string
+          is_suspended?: boolean | null
           license_number?: string | null
           member_id?: string
           member_since?: string | null
