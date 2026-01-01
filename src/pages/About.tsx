@@ -1,6 +1,9 @@
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Eye, Users, Heart, Shield, Trophy } from "lucide-react";
+import { Target, Eye, Users, Heart, Shield, Trophy, User } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const About = () => {
   const highlights = [
@@ -26,12 +29,18 @@ const About = () => {
     },
   ];
 
-  const team = [
-    { name: "Rahul Sharma", role: "President", photo: "👤" },
-    { name: "Vikram Singh", role: "Vice President", photo: "👤" },
-    { name: "Amit Kumar", role: "Ride Captain", photo: "👤" },
-    { name: "Priya Patel", role: "Secretary", photo: "👤" },
-  ];
+  const { data: teamMembers, isLoading: isLoadingTeam } = useQuery({
+    queryKey: ["team-members"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("team_members")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+  });
 
   return (
     <Layout>
@@ -104,19 +113,45 @@ const About = () => {
 
           <h2 className="text-3xl font-bold mb-6 text-center text-gradient-gold font-cinzel">Core Team</h2>
           <div className="grid md:grid-cols-4 gap-6 mb-12">
-            {team.map((member, index) => (
-              <Card
-                key={member.name}
-                className="text-center animate-fade-in hover-lift"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <CardContent className="p-6">
-                  <div className="text-6xl mb-4">{member.photo}</div>
-                  <h3 className="font-semibold mb-1">{member.name}</h3>
-                  <p className="text-sm text-muted-foreground">{member.role}</p>
-                </CardContent>
-              </Card>
-            ))}
+            {isLoadingTeam ? (
+              Array.from({ length: 4 }).map((_, index) => (
+                <Card key={index} className="text-center">
+                  <CardContent className="p-6">
+                    <Skeleton className="w-24 h-24 rounded-full mx-auto mb-4" />
+                    <Skeleton className="h-5 w-32 mx-auto mb-2" />
+                    <Skeleton className="h-4 w-24 mx-auto" />
+                  </CardContent>
+                </Card>
+              ))
+            ) : teamMembers && teamMembers.length > 0 ? (
+              teamMembers.map((member, index) => (
+                <Card
+                  key={member.id}
+                  className="text-center animate-fade-in hover-lift"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <CardContent className="p-6">
+                    <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                      {member.photo_url ? (
+                        <img
+                          src={member.photo_url}
+                          alt={member.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <User className="w-12 h-12 text-primary" />
+                      )}
+                    </div>
+                    <h3 className="font-semibold mb-1 text-gradient-gold">{member.name}</h3>
+                    <p className="text-sm text-muted-foreground">{member.role}</p>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <div className="col-span-4 text-center py-8 text-muted-foreground">
+                No team members to display.
+              </div>
+            )}
           </div>
         </div>
       </div>
