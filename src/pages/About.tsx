@@ -131,7 +131,7 @@ const About = () => {
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <CardContent className="p-6">
-                    <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                    <div className="w-full aspect-[5/4] mx-auto mb-4 rounded-lg overflow-hidden bg-muted flex items-center justify-center">
                       {member.photo_url ? (
                         <img
                           src={member.photo_url}
