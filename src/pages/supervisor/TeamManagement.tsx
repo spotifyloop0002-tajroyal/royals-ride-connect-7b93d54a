@@ -15,6 +15,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface TeamMember {
   id: string;
@@ -23,6 +40,84 @@ interface TeamMember {
   photo_url: string | null;
   sort_order: number;
   is_active: boolean;
+}
+
+interface SortableTeamItemProps {
+  member: TeamMember;
+  onEdit: (member: TeamMember) => void;
+  onDelete: (id: string) => void;
+  onToggleActive: (id: string, is_active: boolean) => void;
+  isDeleting: boolean;
+}
+
+function SortableTeamItem({ member, onEdit, onDelete, onToggleActive, isDeleting }: SortableTeamItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: member.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-4 p-4 border rounded-lg bg-background"
+    >
+      <button
+        {...attributes}
+        {...listeners}
+        className="cursor-grab active:cursor-grabbing touch-none"
+      >
+        <GripVertical className="h-5 w-5 text-muted-foreground" />
+      </button>
+      <div className="flex-shrink-0">
+        {member.photo_url ? (
+          <img
+            src={member.photo_url}
+            alt={member.name}
+            className="w-12 h-12 rounded-lg object-cover"
+          />
+        ) : (
+          <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center">
+            <User className="h-6 w-6 text-muted-foreground" />
+          </div>
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold truncate">{member.name}</p>
+        <p className="text-sm text-muted-foreground">{member.role}</p>
+      </div>
+      <div className="flex items-center gap-2">
+        <Switch
+          checked={member.is_active}
+          onCheckedChange={(checked) => onToggleActive(member.id, checked)}
+        />
+        <span className="text-sm text-muted-foreground w-16">
+          {member.is_active ? "Active" : "Hidden"}
+        </span>
+      </div>
+      <Button variant="ghost" size="icon" onClick={() => onEdit(member)}>
+        <Edit2 className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => onDelete(member.id)}
+        disabled={isDeleting}
+      >
+        <Trash2 className="h-4 w-4 text-destructive" />
+      </Button>
+    </div>
+  );
 }
 
 export default function TeamManagement() {
@@ -36,6 +131,13 @@ export default function TeamManagement() {
     photo_url: "",
   });
   const [uploading, setUploading] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const { data: teamMembers, isLoading } = useQuery({
     queryKey: ["team-members-admin"],
@@ -80,6 +182,7 @@ export default function TeamManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team-members-admin"] });
+      queryClient.invalidateQueries({ queryKey: ["team-members"] });
       toast({ title: "Team member added successfully" });
       resetForm();
     },
@@ -102,6 +205,7 @@ export default function TeamManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team-members-admin"] });
+      queryClient.invalidateQueries({ queryKey: ["team-members"] });
       toast({ title: "Team member updated successfully" });
       resetForm();
     },
@@ -117,6 +221,7 @@ export default function TeamManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team-members-admin"] });
+      queryClient.invalidateQueries({ queryKey: ["team-members"] });
       toast({ title: "Team member deleted" });
     },
     onError: (error: Error) => {
@@ -134,7 +239,28 @@ export default function TeamManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team-members-admin"] });
+      queryClient.invalidateQueries({ queryKey: ["team-members"] });
       toast({ title: "Status updated" });
+    },
+  });
+
+  const reorderMutation = useMutation({
+    mutationFn: async (updates: { id: string; sort_order: number }[]) => {
+      for (const update of updates) {
+        const { error } = await supabase
+          .from("team_members")
+          .update({ sort_order: update.sort_order })
+          .eq("id", update.id);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["team-members-admin"] });
+      queryClient.invalidateQueries({ queryKey: ["team-members"] });
+      toast({ title: "Order updated" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error reordering", description: error.message, variant: "destructive" });
     },
   });
 
@@ -193,6 +319,23 @@ export default function TeamManagement() {
     }
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id && teamMembers) {
+      const oldIndex = teamMembers.findIndex((m) => m.id === active.id);
+      const newIndex = teamMembers.findIndex((m) => m.id === over.id);
+
+      const newOrder = arrayMove(teamMembers, oldIndex, newIndex);
+      const updates = newOrder.map((member, index) => ({
+        id: member.id,
+        sort_order: index + 1,
+      }));
+
+      reorderMutation.mutate(updates);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -238,7 +381,7 @@ export default function TeamManagement() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="photo">Photo</Label>
+                <Label htmlFor="photo">Photo (5:4 ratio recommended)</Label>
                 <Input
                   id="photo"
                   type="file"
@@ -275,7 +418,10 @@ export default function TeamManagement() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Team Members ({teamMembers?.length || 0})</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            Team Members ({teamMembers?.length || 0})
+            <span className="text-sm font-normal text-muted-foreground">• Drag to reorder</span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {teamMembers?.length === 0 ? (
@@ -283,55 +429,31 @@ export default function TeamManagement() {
               No team members added yet. Click "Add Team Member" to get started.
             </p>
           ) : (
-            <div className="space-y-4">
-              {teamMembers?.map((member) => (
-                <div
-                  key={member.id}
-                  className="flex items-center gap-4 p-4 border rounded-lg"
-                >
-                  <GripVertical className="h-5 w-5 text-muted-foreground" />
-                  <div className="flex-shrink-0">
-                    {member.photo_url ? (
-                      <img
-                        src={member.photo_url}
-                        alt={member.name}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                        <User className="h-6 w-6 text-muted-foreground" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold truncate">{member.name}</p>
-                    <p className="text-sm text-muted-foreground">{member.role}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Switch
-                      checked={member.is_active}
-                      onCheckedChange={(checked) =>
-                        toggleActiveMutation.mutate({ id: member.id, is_active: checked })
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={teamMembers?.map((m) => m.id) || []}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-4">
+                  {teamMembers?.map((member) => (
+                    <SortableTeamItem
+                      key={member.id}
+                      member={member}
+                      onEdit={handleEdit}
+                      onDelete={(id) => deleteMutation.mutate(id)}
+                      onToggleActive={(id, is_active) =>
+                        toggleActiveMutation.mutate({ id, is_active })
                       }
+                      isDeleting={deleteMutation.isPending}
                     />
-                    <span className="text-sm text-muted-foreground w-16">
-                      {member.is_active ? "Active" : "Hidden"}
-                    </span>
-                  </div>
-                  <Button variant="ghost" size="icon" onClick={() => handleEdit(member)}>
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => deleteMutation.mutate(member.id)}
-                    disabled={deleteMutation.isPending}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+            </DndContext>
           )}
         </CardContent>
       </Card>
