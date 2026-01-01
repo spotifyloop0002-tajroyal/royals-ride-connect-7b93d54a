@@ -204,6 +204,32 @@ All colors MUST be HSL.
     animation: gold-glow 2s ease-in-out infinite;
   }
   
+  /* Gold Shimmer Text Effect */
+  @keyframes gold-shimmer {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+  
+  .text-shimmer-gold {
+    background: linear-gradient(
+      90deg,
+      hsl(43 74% 49%) 0%,
+      hsl(43 90% 65%) 25%,
+      hsl(43 100% 75%) 50%,
+      hsl(43 90% 65%) 75%,
+      hsl(43 74% 49%) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gold-shimmer 3s linear infinite;
+  }
+  
   /* Gold Gradient Text - works in all themes */
   .text-gradient-gold {
     background: linear-gradient(to right, hsl(43 74% 49%), hsl(25 60% 45%), hsl(43 74% 49%));

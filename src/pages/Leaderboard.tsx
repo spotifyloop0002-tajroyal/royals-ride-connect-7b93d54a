@@ -79,6 +79,20 @@ export default function Leaderboard() {
             <div className="flex-shrink-0">
               {getRankIcon(index)}
             </div>
+            {/* Profile Photo */}
+            <div className="flex-shrink-0">
+              {rider.profile_photo_url ? (
+                <img 
+                  src={rider.profile_photo_url} 
+                  alt={rider.full_name}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-primary"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground border-2 border-primary">
+                  <span className="text-lg font-bold">{rider.full_name?.charAt(0) || '?'}</span>
+                </div>
+              )}
+            </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold truncate text-foreground">{rider.full_name}</h3>
@@ -145,7 +159,7 @@ export default function Leaderboard() {
                   <h2 className="text-2xl font-bold text-primary font-cinzel">Top Distance Rider</h2>
                   {sortByKm[0] && (
                     <>
-                      <p className="text-xl mt-2 text-primary">{sortByKm[0].full_name}</p>
+                      <p className="text-xl mt-2 text-shimmer-gold font-semibold">{sortByKm[0].full_name}</p>
                       <p className="text-3xl font-bold mt-1 text-primary">{sortByKm[0].total_km_ridden.toLocaleString()} km</p>
                     </>
                   )}
@@ -161,7 +175,7 @@ export default function Leaderboard() {
                   <h2 className="text-2xl font-bold text-primary font-cinzel">Most Active Rider</h2>
                   {sortByRides[0] && (
                     <>
-                      <p className="text-xl mt-2 text-primary">{sortByRides[0].full_name}</p>
+                      <p className="text-xl mt-2 text-shimmer-gold font-semibold">{sortByRides[0].full_name}</p>
                       <p className="text-3xl font-bold mt-1 text-primary">{sortByRides[0].total_rides_completed} rides</p>
                     </>
                   )}
@@ -177,7 +191,7 @@ export default function Leaderboard() {
                   <h2 className="text-2xl font-bold text-primary font-cinzel">Top Badge Collector</h2>
                   {sortByBadges[0] && (
                     <>
-                      <p className="text-xl mt-2 text-primary">{sortByBadges[0].full_name}</p>
+                      <p className="text-xl mt-2 text-shimmer-gold font-semibold">{sortByBadges[0].full_name}</p>
                       <p className="text-3xl font-bold mt-1 text-primary">{sortByBadges[0].badgeCount} badges</p>
                     </>
                   )}
