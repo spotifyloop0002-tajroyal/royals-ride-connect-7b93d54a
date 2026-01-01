@@ -134,14 +134,14 @@ export default function Leaderboard() {
             </TabsList>
 
             <TabsContent value="km" className="space-y-4">
-              <Card className="mb-6 bg-gradient-to-r from-primary to-secondary text-primary-foreground">
+              <Card className="mb-6 bg-gradient-to-r from-primary to-secondary">
                 <CardContent className="p-6 text-center">
-                  <Trophy className="w-12 h-12 mx-auto mb-2" />
-                  <h2 className="text-2xl font-bold">Top Distance Rider</h2>
+                  <Trophy className="w-12 h-12 mx-auto mb-2 text-primary-foreground dark:text-[hsl(43,74%,49%)]" />
+                  <h2 className="text-2xl font-bold text-primary-foreground dark:text-[hsl(43,74%,49%)]">Top Distance Rider</h2>
                   {sortByKm[0] && (
                     <>
-                      <p className="text-xl mt-2">{sortByKm[0].full_name}</p>
-                      <p className="text-3xl font-bold mt-1">{sortByKm[0].total_km_ridden.toLocaleString()} km</p>
+                      <p className="text-xl mt-2 text-primary-foreground dark:text-[hsl(43,74%,49%)]">{sortByKm[0].full_name}</p>
+                      <p className="text-3xl font-bold mt-1 text-primary-foreground dark:text-[hsl(43,74%,49%)]">{sortByKm[0].total_km_ridden.toLocaleString()} km</p>
                     </>
                   )}
                 </CardContent>
@@ -150,14 +150,14 @@ export default function Leaderboard() {
             </TabsContent>
 
             <TabsContent value="rides" className="space-y-4">
-              <Card className="mb-6 bg-gradient-to-r from-primary to-secondary text-primary-foreground">
+              <Card className="mb-6 bg-gradient-to-r from-primary to-secondary">
                 <CardContent className="p-6 text-center">
-                  <Trophy className="w-12 h-12 mx-auto mb-2" />
-                  <h2 className="text-2xl font-bold">Most Active Rider</h2>
+                  <Trophy className="w-12 h-12 mx-auto mb-2 text-primary-foreground dark:text-[hsl(43,74%,49%)]" />
+                  <h2 className="text-2xl font-bold text-primary-foreground dark:text-[hsl(43,74%,49%)]">Most Active Rider</h2>
                   {sortByRides[0] && (
                     <>
-                      <p className="text-xl mt-2">{sortByRides[0].full_name}</p>
-                      <p className="text-3xl font-bold mt-1">{sortByRides[0].total_rides_completed} rides</p>
+                      <p className="text-xl mt-2 text-primary-foreground dark:text-[hsl(43,74%,49%)]">{sortByRides[0].full_name}</p>
+                      <p className="text-3xl font-bold mt-1 text-primary-foreground dark:text-[hsl(43,74%,49%)]">{sortByRides[0].total_rides_completed} rides</p>
                     </>
                   )}
                 </CardContent>
@@ -166,14 +166,14 @@ export default function Leaderboard() {
             </TabsContent>
 
             <TabsContent value="badges" className="space-y-4">
-              <Card className="mb-6 bg-gradient-to-r from-primary to-secondary text-primary-foreground">
+              <Card className="mb-6 bg-gradient-to-r from-primary to-secondary">
                 <CardContent className="p-6 text-center">
-                  <Trophy className="w-12 h-12 mx-auto mb-2" />
-                  <h2 className="text-2xl font-bold">Top Badge Collector</h2>
+                  <Trophy className="w-12 h-12 mx-auto mb-2 text-primary-foreground dark:text-[hsl(43,74%,49%)]" />
+                  <h2 className="text-2xl font-bold text-primary-foreground dark:text-[hsl(43,74%,49%)]">Top Badge Collector</h2>
                   {sortByBadges[0] && (
                     <>
-                      <p className="text-xl mt-2">{sortByBadges[0].full_name}</p>
-                      <p className="text-3xl font-bold mt-1">{sortByBadges[0].badgeCount} badges</p>
+                      <p className="text-xl mt-2 text-primary-foreground dark:text-[hsl(43,74%,49%)]">{sortByBadges[0].full_name}</p>
+                      <p className="text-3xl font-bold mt-1 text-primary-foreground dark:text-[hsl(43,74%,49%)]">{sortByBadges[0].badgeCount} badges</p>
                     </>
                   )}
                 </CardContent>
