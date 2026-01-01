@@ -17,10 +17,10 @@ const Home = () => {
   const stats = [
     { icon: Calendar, title: "Total Rides", value: "500+" },
     { icon: Route, title: "KM Per Rider", value: "125,000" },
-    { icon: TrendingUp, title: "Combined KM", value: "180,000" },
+    { icon: TrendingUp, title: "Combined KM", value: "18,00,000" },
     { icon: MapPin, title: "Cities Covered", value: "300+" },
     { icon: Users, title: "Active Riders", value: "350+" },
-    { icon: Award, title: "Years Strong", value: "19+" },
+    { icon: Award, title: "Years Strong", value: "20+" },
   ];
 
   useEffect(() => {
