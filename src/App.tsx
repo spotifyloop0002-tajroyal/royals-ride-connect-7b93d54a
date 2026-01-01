@@ -33,6 +33,7 @@ import SupervisorDashboard from './pages/supervisor/SupervisorDashboard';
 import PaymentOverview from './pages/supervisor/PaymentOverview';
 import UserManagement from './pages/supervisor/UserManagement';
 import NotificationBroadcast from './pages/supervisor/NotificationBroadcast';
+import TeamManagement from './pages/supervisor/TeamManagement';
 import { SupervisorRoute } from './components/SupervisorRoute';
 import CursorTrail from './components/CursorTrail';
 
@@ -111,6 +112,7 @@ const App = () => (
               <Route path="payments" element={<PaymentOverview />} />
               <Route path="users" element={<UserManagement />} />
               <Route path="notifications" element={<NotificationBroadcast />} />
+              <Route path="team" element={<TeamManagement />} />
             </Route>
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

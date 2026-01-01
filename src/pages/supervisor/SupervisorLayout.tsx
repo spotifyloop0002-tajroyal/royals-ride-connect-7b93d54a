@@ -44,6 +44,7 @@ export default function SupervisorLayout() {
     { icon: CreditCard, label: "Payments", path: "/supervisor/payments" },
     { icon: Users, label: "Users", path: "/supervisor/users" },
     { icon: Bell, label: "Notifications", path: "/supervisor/notifications" },
+    { icon: Users, label: "Core Team", path: "/supervisor/team" },
   ];
 
   const NavLinks = () => (
