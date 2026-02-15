@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import EnergyButton from "./EnergyButton";
@@ -19,6 +20,7 @@ const fallbackSlides = [
 ];
 
 const HeroSlider = () => {
+  const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -133,8 +135,10 @@ const HeroSlider = () => {
             Since 2005 – Agra's First Riders Club
           </p>
           <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Link to="/auth">
-              <EnergyButton variant="primary" className="animate-gold-glow">JOIN THE REVOLUTION</EnergyButton>
+            <Link to={user ? "/dashboard" : "/auth"}>
+              <EnergyButton variant="primary" className="animate-gold-glow">
+                {user ? "MY DASHBOARD" : "JOIN THE REVOLUTION"}
+              </EnergyButton>
             </Link>
             <Link to="/rides">
               <EnergyButton variant="accent" className="animate-gold-glow">UPCOMING RIDES</EnergyButton>
