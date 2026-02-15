@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
@@ -132,12 +133,12 @@ const HeroSlider = () => {
             Since 2005 – Agra's First Riders Club
           </p>
           <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-6 justify-center">
-            <a href="/membership">
+            <Link to="/auth">
               <EnergyButton variant="primary" className="animate-gold-glow">JOIN THE REVOLUTION</EnergyButton>
-            </a>
-            <a href="/rides">
+            </Link>
+            <Link to="/rides">
               <EnergyButton variant="accent" className="animate-gold-glow">UPCOMING RIDES</EnergyButton>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
