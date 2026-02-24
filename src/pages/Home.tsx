@@ -1,13 +1,8 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import Layout from "@/components/Layout";
 import HeroSlider from "@/components/HeroSlider";
 import StatsCard from "@/components/StatsCard";
 import { MapPin, Users, Route, TrendingUp, Calendar, Award } from "lucide-react";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Lazy load heavy components
 const RoadTimeline = lazy(() => import("@/components/RoadTimeline"));
@@ -26,45 +21,22 @@ const Home = () => {
   const statsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (sectionRef.current) {
-      gsap.fromTo(
-        sectionRef.current.querySelectorAll('.content-block'),
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-          },
-        }
-      );
-    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-in");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
 
-    if (statsRef.current) {
-      gsap.fromTo(
-        statsRef.current.querySelectorAll('.stat-card'),
-        { opacity: 0, y: 30, scale: 0.9 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'back.out(1.7)',
-          scrollTrigger: {
-            trigger: statsRef.current,
-            start: 'top 85%',
-          },
-        }
-      );
-    }
+    sectionRef.current?.querySelectorAll(".content-block").forEach((el) => observer.observe(el));
+    statsRef.current?.querySelectorAll(".stat-card").forEach((el) => observer.observe(el));
 
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
-    };
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -73,7 +45,7 @@ const Home = () => {
       
       <div className="container mx-auto px-4 py-8">
         <section ref={sectionRef} className="mt-16">
-          <div className="max-w-4xl mx-auto text-center mb-12 content-block">
+          <div className="max-w-4xl mx-auto text-center mb-12 content-block fade-up">
             <h2 className="text-4xl md:text-5xl font-black mb-6 text-gradient-gold font-cinzel">
               WELCOME TO THE TAJ ROYALS
             </h2>
@@ -89,8 +61,12 @@ const Home = () => {
           </div>
 
           <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {stats.map((stat) => (
-              <div key={stat.title} className="stat-card hover-lift">
+            {stats.map((stat, i) => (
+              <div 
+                key={stat.title} 
+                className="stat-card fade-up hover-lift"
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
                 <StatsCard {...stat} />
               </div>
             ))}
