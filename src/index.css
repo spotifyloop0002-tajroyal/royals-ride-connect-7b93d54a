@@ -572,3 +572,30 @@ body.premium-dark::-webkit-scrollbar-thumb:hover {
   opacity: 1;
   transform: translateY(0);
 }
+
+.milestone-left {
+  opacity: 0;
+  transform: translateX(-80px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.milestone-left.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.milestone-right {
+  opacity: 0;
+  transform: translateX(80px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.milestone-right.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.timeline-dot.animate-in {
+  opacity: 1 !important;
+  scale: 1 !important;
+}

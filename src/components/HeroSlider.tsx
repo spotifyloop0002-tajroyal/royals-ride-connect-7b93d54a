@@ -6,17 +6,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import EnergyButton from "./EnergyButton";
-import hero1 from "@/assets/hero-1.jpg";
-import hero2 from "@/assets/hero-2.jpg";
-import hero3 from "@/assets/hero-3.jpg";
 
 // Lazy load GoldParticles (canvas-heavy)
 const GoldParticles = lazy(() => import("./GoldParticles"));
 
+// Use static URLs for hero images to avoid bundling them into JS
 const fallbackSlides = [
-  { id: "1", image_url: hero1, alt_text: "Riders on highway", is_active: true, sort_order: 1 },
-  { id: "2", image_url: hero2, alt_text: "Mountain adventure", is_active: true, sort_order: 2 },
-  { id: "3", image_url: hero3, alt_text: "Group at Taj Mahal", is_active: true, sort_order: 3 },
+  { id: "1", image_url: "/images/hero-1.jpg", alt_text: "Riders on highway", is_active: true, sort_order: 1 },
+  { id: "2", image_url: "/images/hero-2.jpg", alt_text: "Mountain adventure", is_active: true, sort_order: 2 },
+  { id: "3", image_url: "/images/hero-3.jpg", alt_text: "Group at Taj Mahal", is_active: true, sort_order: 3 },
 ];
 
 const HeroSlider = () => {
@@ -38,7 +36,7 @@ const HeroSlider = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 10 * 60 * 1000, // 10 minutes - hero images rarely change
+    staleTime: 10 * 60 * 1000,
   });
 
   const slides = (heroImages && heroImages.length > 0) 
@@ -54,7 +52,6 @@ const HeroSlider = () => {
       }));
 
   useEffect(() => {
-    // Animate hero text on mount using CSS transitions instead of GSAP for lighter load
     const elements = [titleRef.current, subtitleRef.current, buttonsRef.current];
     elements.forEach((el, i) => {
       if (el) {
@@ -96,8 +93,8 @@ const HeroSlider = () => {
         </Suspense>
       )}
       
-      {/* Animated gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 animate-pulse z-10 pointer-events-none" />
+      {/* Static gradient overlay - NO animate-pulse (was causing constant repaints) */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 z-10 pointer-events-none" />
       
       {slides.map((slide, index) => (
         <div
@@ -107,10 +104,14 @@ const HeroSlider = () => {
           }`}
         >
           <img
-            src={'isDatabase' in slide && slide.isDatabase ? slide.image_url : (slide.image_url as string)}
+            src={slide.image_url}
             alt={slide.alt_text}
             className="w-full h-full object-cover"
+            width={1920}
+            height={1080}
             loading={index === 0 ? "eager" : "lazy"}
+            decoding={index === 0 ? "sync" : "async"}
+            fetchPriority={index === 0 ? "high" : "low"}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
         </div>
