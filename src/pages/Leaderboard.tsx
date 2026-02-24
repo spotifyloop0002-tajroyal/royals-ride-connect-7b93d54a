@@ -86,6 +86,7 @@ export default function Leaderboard() {
                   src={rider.profile_photo_url} 
                   alt={rider.full_name}
                   className="w-10 h-10 rounded-full object-cover border-2 border-primary"
+                  loading="lazy"
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground border-2 border-primary">

@@ -137,6 +137,7 @@ const About = () => {
                           src={member.photo_url}
                           alt={member.name}
                           className="w-full h-full object-cover"
+                          loading="lazy"
                         />
                       ) : (
                         <User className="w-12 h-12 text-primary" />
