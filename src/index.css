@@ -560,3 +560,15 @@ body.premium-dark::-webkit-scrollbar-thumb {
 body.premium-dark::-webkit-scrollbar-thumb:hover {
   background: hsl(43 74% 49% / 0.7);
 }
+
+/* Intersection Observer animations (replaces GSAP for scroll animations) */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-up.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
