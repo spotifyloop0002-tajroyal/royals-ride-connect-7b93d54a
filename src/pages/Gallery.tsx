@@ -70,6 +70,7 @@ const Gallery = () => {
                       <img
                         src={album.cover_photo_url}
                         alt={album.title}
+                        loading="lazy"
                         className="w-full h-48 object-cover rounded-lg mb-4"
                       />
                     ) : (
@@ -154,6 +155,7 @@ const Gallery = () => {
                     src={photo.photo_url}
                     alt={photo.caption || "Gallery photo"}
                     className="w-full h-48 object-cover rounded-lg transition-transform hover:scale-105"
+                    loading="lazy"
                   />
                   {photo.caption && (
                     <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2 rounded-b-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity">

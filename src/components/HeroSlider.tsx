@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,13 +6,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import EnergyButton from "./EnergyButton";
-import GoldParticles from "./GoldParticles";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
-import gsap from "gsap";
 
-// Fallback slides if no images in database
+// Lazy load GoldParticles (canvas-heavy)
+const GoldParticles = lazy(() => import("./GoldParticles"));
+
 const fallbackSlides = [
   { id: "1", image_url: hero1, alt_text: "Riders on highway", is_active: true, sort_order: 1 },
   { id: "2", image_url: hero2, alt_text: "Mountain adventure", is_active: true, sort_order: 2 },
@@ -38,9 +38,9 @@ const HeroSlider = () => {
       if (error) throw error;
       return data;
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes - hero images rarely change
   });
 
-  // Use database images or fallback to static images
   const slides = (heroImages && heroImages.length > 0) 
     ? heroImages.map(img => ({
         id: img.id,
@@ -54,24 +54,19 @@ const HeroSlider = () => {
       }));
 
   useEffect(() => {
-    // Animate hero text on mount
-    if (titleRef.current && subtitleRef.current && buttonsRef.current) {
-      gsap.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 50, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 1, ease: "power3.out" }
-      );
-      gsap.fromTo(
-        subtitleRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, delay: 0.3, ease: "power2.out" }
-      );
-      gsap.fromTo(
-        buttonsRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, delay: 0.6, ease: "power2.out" }
-      );
-    }
+    // Animate hero text on mount using CSS transitions instead of GSAP for lighter load
+    const elements = [titleRef.current, subtitleRef.current, buttonsRef.current];
+    elements.forEach((el, i) => {
+      if (el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = `opacity 0.8s ease ${i * 0.2}s, transform 0.8s ease ${i * 0.2}s`;
+        requestAnimationFrame(() => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        });
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -94,8 +89,12 @@ const HeroSlider = () => {
 
   return (
     <div className="relative h-screen w-full overflow-hidden -mt-20">
-      {/* Gold particles - only in premium mode */}
-      {document.body.classList.contains("premium-dark") && <GoldParticles />}
+      {/* Gold particles - only in premium mode, lazy loaded */}
+      {document.body.classList.contains("premium-dark") && (
+        <Suspense fallback={null}>
+          <GoldParticles />
+        </Suspense>
+      )}
       
       {/* Animated gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 animate-pulse z-10 pointer-events-none" />
@@ -111,7 +110,7 @@ const HeroSlider = () => {
             src={'isDatabase' in slide && slide.isDatabase ? slide.image_url : (slide.image_url as string)}
             alt={slide.alt_text}
             className="w-full h-full object-cover"
-            loading="eager"
+            loading={index === 0 ? "eager" : "lazy"}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
         </div>
@@ -122,9 +121,7 @@ const HeroSlider = () => {
           <h1 
             ref={titleRef}
             className="text-5xl md:text-7xl font-black mb-4 drop-shadow-2xl text-gradient-gold font-cinzel"
-            style={{ 
-              letterSpacing: '0.05em'
-            }}
+            style={{ letterSpacing: '0.05em' }}
           >
             RIDE TOGETHER. LIVE FREE.
           </h1>

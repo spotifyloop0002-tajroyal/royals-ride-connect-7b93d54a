@@ -1,8 +1,7 @@
+import { lazy, Suspense } from "react";
 import Layout from "@/components/Layout";
 import HeroSlider from "@/components/HeroSlider";
 import StatsCard from "@/components/StatsCard";
-import ParticleBackground from "@/components/ParticleBackground";
-import RoadTimeline from "@/components/RoadTimeline";
 import { MapPin, Users, Route, TrendingUp, Calendar, Award } from "lucide-react";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
@@ -10,21 +9,23 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Lazy load heavy components
+const RoadTimeline = lazy(() => import("@/components/RoadTimeline"));
+
+const stats = [
+  { icon: Calendar, title: "Total Rides", value: "500+" },
+  { icon: Route, title: "KM Per Rider", value: "125,000" },
+  { icon: TrendingUp, title: "Combined KM", value: "18,00,000" },
+  { icon: MapPin, title: "Cities Covered", value: "300+" },
+  { icon: Users, title: "Active Riders", value: "350+" },
+  { icon: Award, title: "Years Strong", value: "20+" },
+];
+
 const Home = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
-  
-  const stats = [
-    { icon: Calendar, title: "Total Rides", value: "500+" },
-    { icon: Route, title: "KM Per Rider", value: "125,000" },
-    { icon: TrendingUp, title: "Combined KM", value: "18,00,000" },
-    { icon: MapPin, title: "Cities Covered", value: "300+" },
-    { icon: Users, title: "Active Riders", value: "350+" },
-    { icon: Award, title: "Years Strong", value: "20+" },
-  ];
 
   useEffect(() => {
-    // Animate section on scroll
     if (sectionRef.current) {
       gsap.fromTo(
         sectionRef.current.querySelectorAll('.content-block'),
@@ -42,7 +43,6 @@ const Home = () => {
       );
     }
 
-    // Animate stats cards
     if (statsRef.current) {
       gsap.fromTo(
         statsRef.current.querySelectorAll('.stat-card'),
@@ -61,11 +61,14 @@ const Home = () => {
         }
       );
     }
+
+    return () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
   }, []);
 
   return (
     <Layout>
-      <ParticleBackground />
       <HeroSlider />
       
       <div className="container mx-auto px-4 py-8">
@@ -86,11 +89,8 @@ const Home = () => {
           </div>
 
           <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {stats.map((stat, index) => (
-              <div
-                key={stat.title}
-                className="stat-card hover-lift"
-              >
+            {stats.map((stat) => (
+              <div key={stat.title} className="stat-card hover-lift">
                 <StatsCard {...stat} />
               </div>
             ))}
@@ -98,7 +98,9 @@ const Home = () => {
         </section>
       </div>
 
-      <RoadTimeline />
+      <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>}>
+        <RoadTimeline />
+      </Suspense>
     </Layout>
   );
 };
